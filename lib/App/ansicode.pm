@@ -1,10 +1,9 @@
 package App::ansicode;
-use 5.008001;
-use strict;
-use warnings;
 
 our $VERSION = "0.01";
 
+use v5.14;
+use warnings;
 
 
 1;
@@ -14,26 +13,27 @@ __END__
 
 =head1 NAME
 
-App::ansicode - It's new $module
+App::ansicode - Command to produce ANSI terminal code
 
 =head1 SYNOPSIS
 
-    use App::ansicode;
+    ansicode [ options ] color-spec
 
 =head1 DESCRIPTION
 
-App::ansicode is ...
-
-=head1 LICENSE
-
-Copyright (C) Kazumasa Utashiro.
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+B<ansicode> is a small command interface to produce ANSI terminal
+code using L<Getopt::EX::Colormap> module.
 
 =head1 AUTHOR
 
-Kazumasa Utashiro E<lt>kaz@utashiro.comE<gt>
+Kazumasa Utashiro
+
+=head1 LICENSE
+
+Copyright 2021 Kazumasa Utashiro.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 
