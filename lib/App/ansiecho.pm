@@ -20,8 +20,7 @@ use Moo;
 
 has debug     => ( is => 'ro' );
 has verbose   => ( is => 'ro', default => 1 );
-has separator => ( is => 'rw', default => ' ' );
-has join      => ( is => 'ro' );
+has no_newline => ( is => 'ro' );
 
 no Moo;
 
@@ -37,26 +36,34 @@ sub run {
     Configure qw(bundling no_getopt_compat pass_through);
     GetOptions($app, make_options "
 	debug
-	verbose   | v !
-	separator     =s
-	join      | j !
+	verbose    | v !
+	no_newline | n !
 	") || pod2usage();
     $app->initialize();
-    print join $app->separator, param(@ARGV);
+    print $app->param(@ARGV);
+    print "\n" unless $app->no_newline;
 }
 
 sub initialize {
     my $app = shift;
-    $app->separator('') if $app->join;
 }
 
 use Getopt::EX::Colormap qw(ansi_pair ansi_code);
 
 sub param {
-    my @args = @_;
-    my @list;
-    while (@args) {
-	my $arg = shift @args;
+    my $app = shift;
+    my @in = @_;
+    my @out;
+    while (@in) {
+	my $arg = shift @in;
+	#
+	# -r : raw code
+	#
+	if ($arg =~ /^-r(.+)?$/) {
+	    my $spec = $1 || shift @in;
+	    push @out, ansi_code($spec);
+	    next;
+	}
 	#
 	# -c : color
 	#
@@ -67,33 +74,47 @@ sub param {
 		    return split $delim, $param, 2;
 		}
 		if ($param) {
-		    @args >= 1 or die "$arg : format error.\n";
-		    return ($param, shift @args);
+		    @in >= 1 or die "$arg : format error.\n";
+		    return ($param, shift @in);
 		}
-		@args >= 2 or die "$arg : parameter error.";
-		splice @args, 0, 2;
+		@in >= 2 or die "$arg : parameter error.";
+		splice @in, 0, 2;
 	    }->();
 	    my($s, $e) = ansi_pair($color);
-	    push @list, $s . $string . $e;
+	    push @out, $s . $string . $e;
 	}
 	#
 	# -f : format
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
-	    my $format = defined $1 ? $1 : shift @args;
-	    @args = param(@args);
+	    my $format = defined $1 ? $1 : shift @in;
+	    $format = safe_interpolate($format);
+	    @in = $app->param(@in);
 	    my $n = $format =~ tr'%'%';
-	    @args >= $n or die "$arg : not enough arguments.\n";
-	    push @list, ansi_sprintf($format, splice @args, 0, $n);
+	    @in >= $n or die "$arg : not enough arguments.\n";
+	    push @out, ansi_sprintf($format, splice @in, 0, $n);
 	}
 	#
 	# string
 	#
 	else {
-	    push @list, $arg;
+	    push @out, $arg;
 	}
     }
-    return @list;
+    return @out;
+}
+
+sub safe_interpolate {
+    $_[0] =~ s{
+	( \\ x{[0-9a-f]+}
+	| \\ x[0-9a-f]{2}
+	| \\ N{.+?}
+	| \\ c.
+	| \\ o{\d+}
+	| \\ \d\d\d
+	| \\ .
+        )
+    }{ eval qq["$1"] or die }xger;
 }
 
 1;
