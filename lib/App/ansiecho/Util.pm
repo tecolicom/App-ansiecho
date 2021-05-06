@@ -18,4 +18,18 @@ sub make_options {
     @_;
 }
 
+sub safe_backslash {
+    $_[0] =~ s{
+	( \\ x{[0-9a-f]+}
+	| \\ x[0-9a-f]{2}
+	| \\ N{[\ \w]+}
+	| \\ N{U\+[0-9a-f]+}
+	| \\ c.
+	| \\ o{\d+}
+	| \\ \d\d\d
+	| \\ .
+        )
+    }{ eval qq["$1"] or die "$1 : string error.\n"}xiger;
+}
+
 1;

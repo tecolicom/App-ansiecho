@@ -18,9 +18,13 @@ use Pod::Usage;
 
 use Moo;
 
-has debug     => ( is => 'ro' );
-has verbose   => ( is => 'ro', default => 1 );
+has debug      => ( is => 'ro' );
+has verbose    => ( is => 'ro', default => 1 );
 has no_newline => ( is => 'ro' );
+has join       => ( is => 'ro' );
+has separator  => ( is => 'rw', default => " " );
+
+has terminator => ( is => 'rw', default => "\n" );
 
 no Moo;
 
@@ -38,14 +42,18 @@ sub run {
 	debug
 	verbose    | v !
 	no_newline | n !
+	join       | j !
+	separator      =s
 	") || pod2usage();
     $app->initialize();
-    print $app->param(@ARGV);
-    print "\n" unless $app->no_newline;
+    print join $app->separator, $app->param(@ARGV);
+    print $app->terminator;
 }
 
 sub initialize {
     my $app = shift;
+    $app->terminator('') if $app->no_newline;
+    $app->separator('') if $app->join;
 }
 
 use Getopt::EX::Colormap qw(ansi_pair ansi_code);
@@ -54,67 +62,65 @@ sub param {
     my $app = shift;
     my @in = @_;
     my @out;
+    my @seq;
     while (@in) {
 	my $arg = shift @in;
 	#
-	# -r : raw code
+	# -s, -e : raw sequence
 	#
-	if ($arg =~ /^-r(.+)?$/) {
-	    my $spec = $1 || shift @in;
-	    push @out, ansi_code($spec);
+	if ($arg =~ /^-([se])(.+)?$/) {
+	    my $position = $1;
+	    my $spec = $2 || shift @in;
+	    my $code = ansi_code($spec);
+	    if ($position eq 's' or @out == 0) {
+		push @seq, $code;
+	    } else {
+		$out[-1] .= $code;
+	    }
 	    next;
 	}
+
+	push @out, join '', splice @seq, 0;
+
 	#
 	# -c : color
 	#
-	if ($arg =~ /^-c(\pP)?+(.+)?$/) {
+	if ($arg =~ /^-c((?![\/\^~;#])\pP)?+(.+)?$/) {
 	    my($delim, $param) = ($1, $2);
 	    my($color, $string) = sub {
 		if ($delim and $param and $param =~ $delim) {
 		    return split $delim, $param, 2;
 		}
-		if ($param) {
-		    @in >= 1 or die "$arg : format error.\n";
-		    return ($param, shift @in);
-		}
-		@in >= 2 or die "$arg : parameter error.";
-		splice @in, 0, 2;
+		my $color = $param || shift @in;
+		@in = $app->param(@in);
+		($color, shift @in);
 	    }->();
 	    my($s, $e) = ansi_pair($color);
-	    push @out, $s . $string . $e;
+	    $out[-1] .= $s . $string . $e;
 	}
 	#
 	# -f : format
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my $format = defined $1 ? $1 : shift @in;
-	    $format = safe_interpolate($format);
+	    $format = safe_backslash($format);
 	    @in = $app->param(@in);
-	    my $n = $format =~ tr'%'%';
+	    my $n = $format =~ tr[%][%];
 	    @in >= $n or die "$arg : not enough arguments.\n";
-	    push @out, ansi_sprintf($format, splice @in, 0, $n);
+	    $out[-1] .= ansi_sprintf($format, splice @in, 0, $n);
 	}
 	#
 	# string
 	#
 	else {
-	    push @out, $arg;
+	    $out[-1] .= $arg;
 	}
     }
+    if (@seq) {
+	push @out, '' if @out == 0;
+	$out[-1] .= join '', splice @seq, 0;
+    }
     return @out;
-}
-
-sub safe_interpolate {
-    $_[0] =~ s{
-	( \\ x{[0-9a-f]+}
-	| \\ x[0-9a-f]{2}
-	| \\ N{.+?}
-	| \\ c.
-	| \\ o{\d+}
-	| \\ \d\d\d
-	| \\ .
-        )
-    }{ eval qq["$1"] or die }xger;
 }
 
 1;
