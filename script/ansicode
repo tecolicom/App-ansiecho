@@ -1,0 +1,51 @@
+#!/usr/bin/env perl
+
+use v5.14;
+use warnings;
+use App::ansicode;
+
+App::ansicode->new->run(splice @ARGV);
+
+exit;
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+ansicode - Command to produce ANSI terminal code
+
+=head1 VERSION
+
+Version 0.01
+
+=head1 SYNOPSIS
+
+  ansicode [ options ] color-spec
+
+=head1 DESCRIPTION
+
+B<ansicode> is a small command interface to produce ANSI terminal
+code using L<Getopt::EX::Colormap> module.
+
+=head1 INSTALL
+
+cpanm https://github.com/kaz-utashiro/App-ansicode.git
+
+=head1 SEE ALSO
+
+L<Getopt::EX::Colormap>
+
+=head1 AUTHOR
+
+Kazumasa Utashiro
+
+=head1 LICENSE
+
+Copyright 2021 Kazumasa Utashiro.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
