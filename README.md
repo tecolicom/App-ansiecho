@@ -1,15 +1,15 @@
 
 # NAME
 
-App::ansicode - Command to produce ANSI terminal code
+App::ansiecho - Command to produce ANSI terminal code
 
 # SYNOPSIS
 
-    ansicode [ options ] color-spec
+    ansiecho [ options ] color-spec
 
 # DESCRIPTION
 
-**ansicode** is a small command interface to produce ANSI terminal
+**ansiecho** is a small command interface to produce ANSI terminal
 code using [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap) module.
 
 # AUTHOR

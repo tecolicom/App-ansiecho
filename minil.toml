@@ -1,4 +1,4 @@
-name = "App-ansicode"
+name = "App-ansiecho"
 badges = ['github-actions/test', 'metacpan']
 authority="cpan:UTASHIRO"
 

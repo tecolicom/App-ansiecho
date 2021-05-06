@@ -1,4 +1,4 @@
-package App::ansicode;
+package App::ansiecho;
 
 our $VERSION = "0.01";
 
@@ -25,7 +25,7 @@ has join      => ( is => 'ro' );
 
 no Moo;
 
-use App::ansicode::Util;
+use App::ansiecho::Util;
 use Text::ANSI::Printf qw(ansi_sprintf);
 
 sub run {
@@ -104,15 +104,15 @@ __END__
 
 =head1 NAME
 
-App::ansicode - Command to produce ANSI terminal code
+App::ansiecho - Command to produce ANSI terminal code
 
 =head1 SYNOPSIS
 
-    ansicode [ options ] color-spec
+    ansiecho [ options ] color-spec
 
 =head1 DESCRIPTION
 
-B<ansicode> is a small command interface to produce ANSI terminal
+B<ansiecho> is a small command interface to produce ANSI terminal
 code using L<Getopt::EX::Colormap> module.
 
 =head1 AUTHOR

@@ -1,4 +1,4 @@
-package App::ansicode;
+package App::ansiecho;
 use v5.14;
 use warnings;
 
