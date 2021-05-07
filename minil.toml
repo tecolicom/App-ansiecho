@@ -1,4 +1,6 @@
 name = "App-ansiecho"
+readme_from = "script/ansiecho"
+script_files = [ "script/ansiecho" ]
 badges = ['github-actions/test', 'metacpan']
 authority="cpan:UTASHIRO"
 

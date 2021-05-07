@@ -22,6 +22,7 @@ has debug      => ( is => 'ro' );
 has verbose    => ( is => 'ro', default => 1 );
 has no_newline => ( is => 'ro' );
 has join       => ( is => 'ro' );
+has escape     => ( is => 'ro' );
 has separator  => ( is => 'rw', default => " " );
 
 has terminator => ( is => 'rw', default => "\n" );
@@ -29,7 +30,8 @@ has terminator => ( is => 'rw', default => "\n" );
 no Moo;
 
 use App::ansiecho::Util;
-use Text::ANSI::Printf qw(ansi_sprintf);
+use Getopt::EX v1.23;
+use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
 
 sub run {
     my $app = shift;
@@ -43,6 +45,7 @@ sub run {
 	verbose    | v !
 	no_newline | n !
 	join       | j !
+	escape     | e !
 	separator      =s
 	") || pod2usage();
     $app->initialize();
@@ -56,31 +59,32 @@ sub initialize {
     $app->separator('') if $app->join;
 }
 
-use Getopt::EX::Colormap qw(ansi_pair ansi_code);
+use Getopt::EX::Colormap qw(colorize ansi_code);
 
 sub param {
     my $app = shift;
     my @in = @_;
     my @out;
-    my @seq;
+    my @pending;
     while (@in) {
 	my $arg = shift @in;
 	#
-	# -s, -e : raw sequence
+	# -r     : raw data
+	# -s, -z : ansi sequence
 	#
-	if ($arg =~ /^-([se])(.+)?$/) {
-	    my $position = $1;
-	    my $spec = $2 || shift @in;
-	    my $code = ansi_code($spec);
-	    if ($position eq 's' or @out == 0) {
-		push @seq, $code;
+	if ($arg =~ /^-([szr])(.+)?$/) {
+	    my $opt = $1;
+	    my $text = $2 || shift @in;
+	    my $data = $opt eq 'r' ? safe_backslash($text) : ansi_code($text);
+	    if (@out == 0 or $opt eq 's') {
+		push @pending, $data;
 	    } else {
-		$out[-1] .= $code;
+		$out[-1] .= $data;
 	    }
 	    next;
 	}
 
-	push @out, join '', splice @seq, 0;
+	push @out, join '', splice @pending, 0;
 
 	#
 	# -c : color
@@ -95,8 +99,7 @@ sub param {
 		@in = $app->param(@in);
 		($color, shift @in);
 	    }->();
-	    my($s, $e) = ansi_pair($color);
-	    $out[-1] .= $s . $string . $e;
+	    $out[-1] .= colorize($color, $string);
 	}
 	#
 	# -f : format
@@ -105,20 +108,20 @@ sub param {
 	    my $format = defined $1 ? $1 : shift @in;
 	    $format = safe_backslash($format);
 	    @in = $app->param(@in);
-	    my $n = $format =~ tr[%][%];
+	    my $n = grep { $_ ne '%' } $format =~ /%(.)/g;
 	    @in >= $n or die "$arg : not enough arguments.\n";
 	    $out[-1] .= ansi_sprintf($format, splice @in, 0, $n);
 	}
 	#
-	# string
+	# string argument
 	#
 	else {
-	    $out[-1] .= $arg;
+	    $out[-1] .= $app->escape ? safe_backslash($arg) : $arg;
 	}
     }
-    if (@seq) {
+    if (@pending) {
 	push @out, '' if @out == 0;
-	$out[-1] .= join '', splice @seq, 0;
+	$out[-1] .= join '', splice @pending, 0;
     }
     return @out;
 }
