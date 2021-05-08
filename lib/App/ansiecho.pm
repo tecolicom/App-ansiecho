@@ -62,6 +62,7 @@ sub initialize {
 use Getopt::EX::Colormap qw(colorize ansi_code);
 
 sub param {
+#   no warnings 'recursion';
     my $app = shift;
     my @in = @_;
     my @out;
@@ -95,8 +96,12 @@ sub param {
 		if ($delim and $param and $param =~ $delim) {
 		    return split $delim, $param, 2;
 		}
-		my $color = $param || shift @in;
-		@in = $app->param(@in);
+		my $color = defined $param ? $param : do {
+		    @in = $app->param(@in) if $in[0] =~ /^-f/;
+		    shift @in;
+		};
+		@in = $app->param(@in) if $in[0] =~ /^-f/;
+		@in > 0 or die;
 		($color, shift @in);
 	    }->();
 	    $out[-1] .= colorize($color, $string);
@@ -107,9 +112,11 @@ sub param {
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my $format = defined $1 ? $1 : shift @in;
 	    $format = safe_backslash($format);
-	    @in = $app->param(@in);
 	    my $n = grep { $_ ne '%' } $format =~ /%(.)/g;
 	    @in >= $n or die "$arg : not enough arguments.\n";
+	    if (grep { /^-/ } @in[0..$n-1]) {
+		@in = $app->param(@in);
+	    }
 	    $out[-1] .= ansi_sprintf($format, splice @in, 0, $n);
 	}
 	#
