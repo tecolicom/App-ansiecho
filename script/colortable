@@ -1,25 +1,5 @@
 #!/bin/bash
 
-_color256() {
-    for c in 0 1 2 3 4 5
-    do
-	local option=()
-	for b in 0 1 2 3 4 5
-	do
-	    for f in "%d$b$c" "$c%d$b" "$b$c%d" "$b%d$c" "$c$b%d" "%d$c$b"
-	    do
-		for a in 0 1 2 3 4 5
-		do
-		    rgb=$(printf "$f" $a)
-		    option+=(-c "$rgb/$rgb" " $rgb")
-		done
-	    done
-	    option+=('\n')
-	done
-	ansiecho -enj "${option[@]}"
-    done
-}
-
 color256() {
     for c in 0 1 2 3 4 5
     do
@@ -57,32 +37,6 @@ rgb16() {
 
 rgb8() {
     ct 500 050 005 055 505 550 000 555
-}
-
-_ct() {
-    local OPTIND cell=4 column=999 option=()
-    ((cell--))
-    while getopts "c:nw:" OPT; do
-	case $OPT in
-            c) cell="$OPTARG";;
-            n) option+=(-n);;
-	    w) column="$OPTARG";;
-	esac
-    done
-    shift $((OPTIND - 1))
-
-    local args=()
-    while (($#))
-    do
-	for c in "${@:1:$column}"
-	do
-	    args+=(-c $c/$c "$(printf " %-${cell}s" $c)")
-	done
-	args+=("\n")
-	(($# <= column)) && break
-	shift $column
-    done
-    ansiecho -jne "${option[@]}" "${args[@]}"
 }
 
 read_array() { IFS=$'\n' read -r -d '' -a ${1} || true ; }
