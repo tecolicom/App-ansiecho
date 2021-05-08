@@ -1,0 +1,125 @@
+#!/bin/bash
+
+_color256() {
+    for c in 0 1 2 3 4 5
+    do
+	local option=()
+	for b in 0 1 2 3 4 5
+	do
+	    for f in "%d$b$c" "$c%d$b" "$b$c%d" "$b%d$c" "$c$b%d" "%d$c$b"
+	    do
+		for a in 0 1 2 3 4 5
+		do
+		    rgb=$(printf "$f" $a)
+		    option+=(-c "$rgb/$rgb" " $rgb")
+		done
+	    done
+	    option+=('\n')
+	done
+	ansiecho -enj "${option[@]}"
+    done
+}
+
+color256() {
+    for c in 0 1 2 3 4 5
+    do
+	local color=()
+	for b in 0 1 2 3 4 5
+	do
+	    for f in "%d$b$c" "$c%d$b" "$b$c%d" "$b%d$c" "$c$b%d" "%d$c$b"
+	    do
+		for a in 0 1 2 3 4 5
+		do
+		    color+=($(printf "$f" $a))
+		done
+	    done
+	done
+	ct -w36 "${color[@]}"
+    done
+}
+
+grey6() {
+    ct -c20 000 111 222 333 444 555
+}
+
+grey24() {
+    ct L00 \
+       L01 L02 L03 L04 L05 L06 L07 L08 L09 L10 L11 L12 \
+       L13 L14 L15 L16 L17 L18 L19 L20 L21 L22 L23 L24 \
+       L25
+}
+
+rgb16() {
+    ct -w8 \
+       R G B C M Y K W \
+       r g b c m y k w
+}
+
+rgb8() {
+    ct 500 050 005 055 505 550 000 555
+}
+
+_ct() {
+    local OPTIND cell=4 column=999 option=()
+    ((cell--))
+    while getopts "c:nw:" OPT; do
+	case $OPT in
+            c) cell="$OPTARG";;
+            n) option+=(-n);;
+	    w) column="$OPTARG";;
+	esac
+    done
+    shift $((OPTIND - 1))
+
+    local args=()
+    while (($#))
+    do
+	for c in "${@:1:$column}"
+	do
+	    args+=(-c $c/$c "$(printf " %-${cell}s" $c)")
+	done
+	args+=("\n")
+	(($# <= column)) && break
+	shift $column
+    done
+    ansiecho -jne "${option[@]}" "${args[@]}"
+}
+
+read_array() { IFS=$'\n' read -r -d '' -a ${1} || true ; }
+
+ct() {
+    local OPTIND cell=4 column=999 option=()
+    while getopts "c:nw:" OPT; do
+	case $OPT in
+            c) cell="$OPTARG";;
+            n) option+=(-n);;
+	    w) column="$OPTARG";;
+	esac
+    done
+    shift $((OPTIND - 1))
+
+    local args=()
+    while (($#))
+    do
+	local tmp=()
+	read_array tmp < <( mkopt $cell "${@:1:$column}" && printf '\0' )
+	args+=("${tmp[@]}" "\n")
+	(($# <= column)) && break
+	shift $column
+    done
+    ansiecho -jne "${option[@]}" "${args[@]}"
+}
+
+mkopt() {
+    local cell=$(($1 - 1)); shift
+    for c in "$@"
+    do
+	printf -- "-c\n%s/%s\n %-${cell}s\n" $c $c $c
+    done
+}
+
+color256
+grey6
+grey24
+rgb16
+rgb8
