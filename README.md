@@ -1,4 +1,4 @@
-
+[![Actions Status](https://github.com/kaz-utashiro/App-ansiecho/workflows/test/badge.svg)](https://github.com/kaz-utashiro/App-ansiecho/actions) [![MetaCPAN Release](https://badge.fury.io/pl/App-ansiecho.svg)](https://metacpan.org/release/App-ansiecho)
 # NAME
 
 ansiecho - Echo command with ANSI terminal code
@@ -32,8 +32,9 @@ You can specify color of each argument by preceding with **-c** option:
 
     ansiecho -c R a -c GI b -c BD c
 
-This command print strings `a`, `b` and `c` in Red, _Green Italic_
-and **Blue Bold** respectively. This can be written as below too.
+This command print strings `a`, `b` and `c` according to the color
+spec of `R` (Red), `GI` (_Green Italic_) and `BD` (**Blue Bold**)
+respectively. This can be written as below too.
 
     ansiecho -cR a -cGI b -cBD c
 
@@ -42,7 +43,7 @@ and **Blue Bold** respectively. This can be written as below too.
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
 special effects such as I (Italic), D (Double-struck; Bold), S
-(Stand-out; Reverse Video).
+(Stand-out; Reverse Video) and more.
 
     RGB  6x6x6    12bit      24bit           color name
     ===  =======  =========  =============  ==================
@@ -52,13 +53,12 @@ special effects such as I (Italic), D (Double-struck; Bold), S
     R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
-As for color notation detail, read ["COLOR
-SPEC" in Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap#COLOR-SPEC).
+More information is described in ["COLOR SPEC"](#color-spec) section.
 
 ## FORMAT
 
-Format string can be specified with **-f** option, and it behave like
-[printf](https://metacpan.org/pod/printf) command.
+Format string can be specified with **-f** option, and it behaves like
+a [printf](https://metacpan.org/pod/printf) command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
@@ -68,7 +68,7 @@ Formatted result becomes a single argument, and can be a subject of
 other operation.  In next example, numbers are formatted, colored, and
 gave to other format.
 
-    ansiecho -f '\N{ALARM CLOCK} %s' -c F/544 -f '%02d:%02d:%02d' 1 2 3
+    ansiecho -f '\N{ALARM CLOCK} %s' -c KF/544 -f ' %02d:%02d:%02d ' 1 2 3
 
 Formatting is done by Perl `sprintf` function.  See
 ["sprintf" in perlfunc](https://metacpan.org/pod/perlfunc#sprintf) for detail.
@@ -103,7 +103,7 @@ Color spec `ZE` produces RESET and ERASE LINE sequence.
 Because **-s** and **-z** does not produce RESET sequence, you can use
 them to accumulate the effects.
 
-    ansiecho -s R R -s S RS -s I RSI -s U RSIU -s F RSIUF -z Z
+    ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
 
 # OPTIONS
 
@@ -184,7 +184,8 @@ Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote
 
 # COLOR SPEC
 
-This is a brief summary taken from [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap).
+This is a brief summary.  Read ["COLOR SPEC" in Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap#COLOR-SPEC) for
+complete description.
 
 Color specification is a combination of single uppercase character
 representing 8 colors, and alternative (usually brighter) colors in
@@ -196,7 +197,7 @@ lowercase :
     C  c  Cyan
     M  m  Magenta
     Y  y  Yellow
-    K  b  Black
+    K  k  Black
     W  w  White
 
 or RGB values and 24 grey levels if using ANSI 256 or full color
@@ -245,17 +246,31 @@ Samples:
     R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
+# INSTALL
+
+## CPANMINUS
+
+From CPAN archive:
+
+    $ cpanm App::ansiecho
+    or
+    $ curl -sL http://cpanmin.us | perl - App::ansiecho
+
+From GIT repository:
+
+    cpanm https://github.com/kaz-utashiro/App-ansiecho.git
+
 # SEE ALSO
 
 ["Quote and Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote-like-Operators)
 
-# INSTALL
-
-cpanm https://github.com/kaz-utashiro/App-ansiecho.git
-
-# SEE ALSO
-
 [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap)
+
+[https://en.wikipedia.org/wiki/ANSI\_escape\_code](https://en.wikipedia.org/wiki/ANSI_escape_code)
+
+[Graphics::ColorNames::X](https://metacpan.org/pod/Graphics::ColorNames::X)
+
+[https://en.wikipedia.org/wiki/X11\_color\_names](https://en.wikipedia.org/wiki/X11_color_names)
 
 # AUTHOR
 

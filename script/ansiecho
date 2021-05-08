@@ -45,8 +45,9 @@ You can specify color of each argument by preceding with B<-c> option:
 
     ansiecho -c R a -c GI b -c BD c
 
-This command print strings C<a>, C<b> and C<c> in Red, I<Green Italic>
-and B<Blue Bold> respectively. This can be written as below too.
+This command print strings C<a>, C<b> and C<c> according to the color
+spec of C<R> (Red), C<GI> (I<Green Italic>) and C<BD> (B<Blue Bold>)
+respectively. This can be written as below too.
 
     ansiecho -cR a -cGI b -cBD c
 
@@ -55,7 +56,7 @@ and B<Blue Bold> respectively. This can be written as below too.
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
 special effects such as I (Italic), D (Double-struck; Bold), S
-(Stand-out; Reverse Video).
+(Stand-out; Reverse Video) and more.
 
     RGB  6x6x6    12bit      24bit           color name
     ===  =======  =========  =============  ==================
@@ -65,13 +66,12 @@ special effects such as I (Italic), D (Double-struck; Bold), S
     R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
-As for color notation detail, read L<Getopt::EX::Colormap/"COLOR
-SPEC">.
+More information is described in L<COLOR SPEC> section.
 
 =head2 FORMAT
 
-Format string can be specified with B<-f> option, and it behave like
-L<printf> command.
+Format string can be specified with B<-f> option, and it behaves like
+a L<printf> command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
@@ -81,7 +81,7 @@ Formatted result becomes a single argument, and can be a subject of
 other operation.  In next example, numbers are formatted, colored, and
 gave to other format.
 
-    ansiecho -f '\N{ALARM CLOCK} %s' -c F/544 -f '%02d:%02d:%02d' 1 2 3
+    ansiecho -f '\N{ALARM CLOCK} %s' -c KF/544 -f ' %02d:%02d:%02d ' 1 2 3
 
 Formatting is done by Perl C<sprintf> function.  See
 L<perlfunc/sprintf> for detail.
@@ -116,7 +116,7 @@ Color spec C<ZE> produces RESET and ERASE LINE sequence.
 Because B<-s> and B<-z> does not produce RESET sequence, you can use
 them to accumulate the effects.
 
-    ansiecho -s R R -s S RS -s I RSI -s U RSIU -s F RSIUF -z Z
+    ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
 
 =head1 OPTIONS
 
@@ -203,7 +203,8 @@ Quote-like Operators">.
 
 =head1 COLOR SPEC
 
-This is a brief summary taken from L<Getopt::EX::Colormap>.
+This is a brief summary.  Read L<Getopt::EX::Colormap/COLOR SPEC> for
+complete description.
 
 Color specification is a combination of single uppercase character
 representing 8 colors, and alternative (usually brighter) colors in
@@ -215,7 +216,7 @@ lowercase :
     C  c  Cyan
     M  m  Magenta
     Y  y  Yellow
-    K  b  Black
+    K  k  Black
     W  w  White
 
 or RGB values and 24 grey levels if using ANSI 256 or full color
@@ -264,17 +265,31 @@ Samples:
     R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
+=head1 INSTALL
+
+=head2 CPANMINUS
+
+From CPAN archive:
+
+    $ cpanm App::ansiecho
+    or
+    $ curl -sL http://cpanmin.us | perl - App::ansiecho
+
+From GIT repository:
+
+    cpanm https://github.com/kaz-utashiro/App-ansiecho.git
+
 =head1 SEE ALSO
 
 L<perlop/"Quote and Quote-like Operators">
 
-=head1 INSTALL
-
-cpanm https://github.com/kaz-utashiro/App-ansiecho.git
-
-=head1 SEE ALSO
-
 L<Getopt::EX::Colormap>
+
+L<https://en.wikipedia.org/wiki/ANSI_escape_code>
+
+L<Graphics::ColorNames::X>
+
+L<https://en.wikipedia.org/wiki/X11_color_names>
 
 =head1 AUTHOR
 

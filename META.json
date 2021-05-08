@@ -59,6 +59,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/kaz-utashiro/App-ansiecho/issues"
+      },
+      "homepage" : "https://github.com/kaz-utashiro/App-ansiecho",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/kaz-utashiro/App-ansiecho.git",
+         "web" : "https://github.com/kaz-utashiro/App-ansiecho"
+      }
+   },
    "version" : "0.01",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
