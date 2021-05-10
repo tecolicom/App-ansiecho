@@ -62,11 +62,25 @@ sub initialize {
 use Getopt::EX::Colormap qw(colorize ansi_code);
 
 sub param {
-#   no warnings 'recursion';
     my $app = shift;
     my @in = @_;
     my @out;
     my @pending;
+    my @stack;
+
+    my $push = sub {
+	push @stack, [ [ splice @pending ], [ splice @out ], @_ ];
+    };
+    my $pop = sub {
+	(my($pending, $out), @in) = @{pop @stack};
+	@pending = @{$pending};
+	push @in, splice @out, 0, 0+@out, @{$out};
+    };
+    my $append = sub {
+	push @out, join '', splice(@pending), @_;
+    };
+
+  RECUR:
     while (@in) {
 	my $arg = shift @in;
 	#
@@ -84,27 +98,25 @@ sub param {
 	    }
 	    next;
 	}
-
-	push @out, join '', splice @pending, 0;
-
 	#
 	# -c : color
 	#
 	if ($arg =~ /^-c((?![\/\^~;#])\pP)?+(.+)?$/) {
 	    my($delim, $param) = ($1, $2);
-	    my($color, $string) = sub {
-		if ($delim and $param and $param =~ $delim) {
-		    return split $delim, $param, 2;
-		}
-		my $color = defined $param ? $param : do {
-		    @in = $app->param(@in) if $in[0] =~ /^-f/;
+	    my($color, $string);
+	    if ($delim and $param and $param =~ $delim) {
+		($color, $string) = split $delim, $param, 2;
+	    }
+	    else {
+		$color = defined $param ? $param : do {
+		    $in[0] =~ /^-f/ and do { $push->($arg); redo };
 		    shift @in;
 		};
-		@in = $app->param(@in) if $in[0] =~ /^-f/;
-		@in > 0 or die;
-		($color, shift @in);
-	    }->();
-	    $out[-1] .= colorize($color, $string);
+		$in[0] =~ /^-f/ and do { $push->('-c', $color); redo };
+		$string = shift @in;
+	    }
+	    $string = safe_backslash($string) if $app->escape;
+	    $append->(colorize($color, $string));
 	}
 	#
 	# -f : format
@@ -115,21 +127,19 @@ sub param {
 	    my $n = grep { $_ ne '%' } $format =~ /%(.)/g;
 	    @in >= $n or die "$arg : not enough arguments.\n";
 	    if (grep { /^-/ } @in[0..$n-1]) {
-		@in = $app->param(@in);
+		do { $push->('-f', $format); redo };
 	    }
-	    $out[-1] .= ansi_sprintf($format, splice @in, 0, $n);
+	    $append->(ansi_sprintf($format, splice @in, 0, $n));
 	}
 	#
 	# string argument
 	#
 	else {
-	    $out[-1] .= $app->escape ? safe_backslash($arg) : $arg;
+	    $append->($app->escape ? safe_backslash($arg) : $arg);
 	}
     }
-    if (@pending) {
-	push @out, '' if @out == 0;
-	$out[-1] .= join '', splice @pending, 0;
-    }
+    @pending and $append->();
+    @stack and do { $pop->(); goto RECUR };
     return @out;
 }
 
