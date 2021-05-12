@@ -1,13 +1,44 @@
 #!/bin/bash
 
-: ${direction:=h}
-
-run() {
-    [ "${direction}" = v ] && v216 || h216
+func=(
+    x216
     g6
     g24
     c16
     c8
+)
+
+while getopts "hvc:0123456789" OPT; do
+    case $OPT in
+	h)
+	    echo ${0##*/} -v -c# -[1..${#func[@]}]
+	    echo -e "\t-h  : show this message"
+	    echo -e "\t-v  : show 216 in vertical direction"
+	    echo -e "\t-c# : vertical columns"
+	    for ((i = 0; i < ${#func[@]}; i++)); do
+		printf "\t-%d  : %s\n" $((i+1)) "${func[$i]}"
+	    done
+	    exit;;
+	v) direction=v;;
+	c) column="$OPTARG";;
+	[1-9]) exec[(($OPT-1))]=1;;
+    esac
+done
+shift $((OPTIND - 1))
+
+: ${direction:=h} ${column:=6}
+
+((${#exec[@]} == 0)) && exec=("${func[@]}")
+
+run() {
+    for ((i = 0; i < ${#func[@]}; i++))
+    do
+	[[ ${exec[$i]} ]] && ${func[$i]}
+    done
+}
+
+x216() {
+    [ "${direction}" = v ] && v216 || h216
 }
 
 h216() {
@@ -28,12 +59,13 @@ v216() {
 	local color=()
 	for b in 0 1 2 3 4 5
 	do
-	    for f in "%d$b$c" "$c%d$b" "$b$c%d" "$b%d$c" "$c$b%d" "%d$c$b"
+	    local format=("%d$b$c" "$c%d$b" "$b$c%d" "$b%d$c" "$c$b%d" "%d$c$b")
+	    for f in ${format[@]:0:$column}
 	    do
 		color+=($(printf "$f $f $f $f $f $f" 0 1 2 3 4 5))
 	    done
 	done
-	ct -w36 "${color[@]}"
+	ct -w$((column * 6)) "${color[@]}"
     done
 }
 
