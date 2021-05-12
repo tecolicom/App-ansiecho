@@ -1,44 +1,49 @@
 #!/bin/bash
 
 func=(
-    x216
+    c216
     g6
     g24
     c16
     c8
 )
 
-while getopts "hvc:0123456789" OPT; do
+while getopts "hvxc:0123456789" OPT; do
     case $OPT in
 	h)
 	    echo ${0##*/} -v -c# -[1..${#func[@]}]
 	    echo -e "\t-h  : show this message"
-	    echo -e "\t-v  : show 216 in vertical direction"
+	    echo -e "\t-x  : transpose 216 color"
 	    echo -e "\t-c# : vertical columns"
-	    for ((i = 0; i < ${#func[@]}; i++)); do
-		printf "\t-%d  : %s\n" $((i+1)) "${func[$i]}"
+	    i=0; for func in ${func[@]}; do
+		printf "\t-%d  : %s\n" $((++i)) $func
 	    done
 	    exit;;
-	v) direction=v;;
+	v) verbose=1;;
+	x) xpose=1;;
 	c) column="$OPTARG";;
 	[1-9]) exec[(($OPT-1))]=1;;
     esac
 done
 shift $((OPTIND - 1))
 
-: ${direction:=h} ${column:=6}
+: ${column:=6}
 
 ((${#exec[@]} == 0)) && exec=("${func[@]}")
 
 run() {
     for ((i = 0; i < ${#func[@]}; i++))
     do
-	[[ ${exec[$i]} ]] && ${func[$i]}
+	if [ ${exec[$i]} ]
+	then
+	    [ ${verbose} ] && echo ${func[$i]}
+	    ${func[$i]}
+	fi
     done
 }
 
-x216() {
-    [ "${direction}" = v ] && v216 || h216
+c216() {
+    [ ${xpose} ] && v216 || h216
 }
 
 h216() {
