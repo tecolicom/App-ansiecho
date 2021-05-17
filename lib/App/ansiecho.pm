@@ -33,6 +33,8 @@ use App::ansiecho::Util;
 use Getopt::EX v1.23;
 use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
 
+use List::Util qw(sum);
+
 sub run {
     my $app = shift;
     local @ARGV = map { utf8::is_utf8($_) ? $_ : decode('utf8', $_) } @_;
@@ -123,7 +125,9 @@ sub param {
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my $format = defined $1 ? $1 : shift @in;
 	    $format = safe_backslash($format);
-	    my $n = grep { $_ ne '%' } $format =~ /%(.)/g;
+	    my $n = sum map {
+		($_ eq '%') ? 0 : ($_ eq '*') ? 2 : 1;
+	    } $format =~ /%(.)/g;
 	    @in >= $n or die "$arg : not enough arguments.\n";
 	    if (grep { /^-/ } @in[0..$n-1]) {
 		do { $push->('-f', $format); redo };

@@ -46,6 +46,7 @@
             "Getopt::EX" : "v1.23.0",
             "Getopt::EX::Colormap" : "0",
             "Getopt::EX::Long" : "0",
+            "List::Util" : "0",
             "Moo" : "0",
             "Pod::Usage" : "0",
             "Text::ANSI::Printf" : "2.01",
