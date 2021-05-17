@@ -2,6 +2,8 @@ package App::ansiecho;
 use v5.14;
 use warnings;
 
+use charnames ':full';
+
 sub make_options {
     map {
 	# "foo_bar" -> "foo_bar|foo-bar|foobar"

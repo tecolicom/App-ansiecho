@@ -7,6 +7,7 @@ use warnings;
 
 use utf8;
 use Encode;
+use charnames ':full';
 use Data::Dumper;
 {
     no warnings 'redefine';
