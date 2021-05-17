@@ -80,7 +80,6 @@ sub param {
 	push @out, join '', splice(@pending), @_;
     };
 
-  RECUR:
     while (@in) {
 	my $arg = shift @in;
 	#
@@ -137,9 +136,13 @@ sub param {
 	else {
 	    $append->($app->escape ? safe_backslash($arg) : $arg);
 	}
+    } continue {
+	if (@in == 0) {
+	    @pending and $append->();
+	    # return from recursion
+	    @stack and $pop->();
+	}
     }
-    @pending and $append->();
-    @stack and do { $pop->(); goto RECUR };
     return @out;
 }
 
