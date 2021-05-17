@@ -63,6 +63,7 @@ a [printf](https://metacpan.org/pod/printf) command.
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
 You can use backslash escape characters in the format string.
+See ["STRING LITERAL"](#string-literal) section.
 
 Formatted result becomes a single argument, and can be a subject of
 other operation.  In next example, numbers are formatted, colored, and
@@ -259,6 +260,17 @@ From CPAN archive:
 From GIT repository:
 
     cpanm https://github.com/kaz-utashiro/App-ansiecho.git
+
+# BUGS
+
+Format string can not made by **-f** option.  Next command does not
+work as you may expect.
+
+    ansiecho -f -f '%%%ds' 16 hello
+
+Next one works, though.
+
+    ansiecho -f '%*s' 16 hello
 
 # SEE ALSO
 
