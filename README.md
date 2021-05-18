@@ -9,6 +9,8 @@ Version 0.01
 
 # SYNOPSIS
 
+ansiecho -c S d -c S i -c S g -c S i -c S t -c S a -c S l
+
 ansiecho -c R Red -c K/Y 'Black on Yellow' -c FSDB BlinkReverseBoldBlue
 
 ansiecho -f '\[ %12s \]' -c SR -f '%+06d' 123
@@ -167,10 +169,10 @@ them to accumulate the effects.
     in the format string except `%%`.  Variable width and precision
     parameter `*` can be used like `%*s` or `%*.*s`.
 
-- **--separator** _string_
+- **--separate** _string_
 
     Set separator string between each arguments.  Option **-j** is a
-    short-cut for **--separator ''**.
+    short-cut for **--separate ''**.
 
 - **--**\[**no**\]**rgb24**
 

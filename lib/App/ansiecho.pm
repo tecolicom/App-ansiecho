@@ -25,9 +25,9 @@ has no_newline => ( is => 'ro' );
 has join       => ( is => 'ro' );
 has escape     => ( is => 'ro' );
 has rgb24      => ( is => 'ro' );
-has separator  => ( is => 'rw', default => " " );
+has separate   => ( is => 'rw', default => " " );
 
-has terminator => ( is => 'rw', default => "\n" );
+has terminate  => ( is => 'rw', default => "\n" );
 
 no Moo;
 
@@ -51,17 +51,20 @@ sub run {
 	join       | j !
 	escape     | e !
 	rgb24          !
-	separator      =s
+	separate       =s
 	") || pod2usage();
     $app->initialize();
-    print join $app->separator, $app->param(@ARGV);
-    print $app->terminator;
+    print join $app->separate, $app->param(@ARGV);
+    print $app->terminate;
 }
 
 sub initialize {
     my $app = shift;
-    $app->terminator('') if $app->no_newline;
-    $app->separator('') if $app->join;
+    $app->terminate('') if $app->no_newline;
+    if ($app->separate) {
+	$app->separate(safe_backslash($app->separate));
+    }
+    $app->separate('') if $app->join;
     if (defined $app->rgb24) {
 	$Getopt::EX::Colormap::RGB24 = !!$app->rgb24;
     }
@@ -124,10 +127,12 @@ sub param {
 	    }
 	    else {
 		$color = defined $param ? $param : do {
-		    $in[0] =~ /^-f/ and do { $push->($arg); redo };
+		    @in or die "$arg: : Parameter error.\n";
+		    $in[0] =~ /^-[fsr]/ and do { $push->($arg); redo };
 		    shift @in;
 		};
-		$in[0] =~ /^-f/ and do { $push->('-c', $color); redo };
+		@in or die "$arg: : Parameter error.\n";
+		$in[0] =~ /^-[frs]/ and do { $push->('-c', $color); redo };
 		$string = shift @in;
 	    }
 	    $string = safe_backslash($string) if $app->escape;
@@ -137,7 +142,8 @@ sub param {
 	# -f : format
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
-	    my $format = defined $1 ? $1 : shift @in;
+	    my $format = defined $1 ? $1 : shift @in
+		// die "$arg: Parameter error.\n";
 	    $format = safe_backslash($format);
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
