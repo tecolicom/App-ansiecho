@@ -89,6 +89,14 @@ sub param {
     };
 
     while (@in) {
+	if ($app->debug) {
+	    local $Data::Dumper::Terse = 1;
+	    local $_ = Dumper(\@out, \@pending, \@in);
+	    s/,\n\s*/, /g;
+	    s/]\n(?=.)/], /g;
+	    s/\n(?=.)\s*/ /g;
+	    warn $_;
+	}
 	my $arg = shift @in;
 	#
 	# -r     : raw data
