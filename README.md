@@ -155,7 +155,8 @@ them to accumulate the effects.
     a subject of other **-c** or **-f** option.
 
     Number of arguments are calculated from the number of `%` characters
-    in the format string except `%%`.
+    in the format string except `%%`.  Variable width and precision
+    parameter `*` can be used like `%*s` or `%*.*s`.
 
 - **--separator** _string_
 

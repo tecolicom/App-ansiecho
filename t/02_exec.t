@@ -22,33 +22,80 @@ is(ansiecho(qw(-c R RED))->{stdout}, R("RED")."\n", '-c R RED');
 is(ansiecho(qw(-cR RED))->{stdout},  R("RED")."\n", '-cR RED');
 is(ansiecho(qw(-c:R:RED))->{stdout}, R("RED")."\n", '-c:R:RED');
 
-is(ansiecho(qw(-c:R:R -c:G:G -c:B:B))->{stdout}, join(" ",R("R"),G("G"),B("B"))."\n", '-c:R:R -c:G:G -c:B:B -c:R:R');
+is(ansiecho(qw(-c:R:R -c:G:G -c:B:B))->{stdout},
+   join(" ",R("R"),G("G"),B("B"))."\n",
+   '-c:R:R -c:G:G -c:B:B -c:R:R');
 
 # -n
 is(ansiecho(qw(-n -c R RED))->{stdout}, R("RED"), '-n');
 
 # -j
-is(ansiecho(qw(-j -c:R:R -c:G:G -c:B:B))->{stdout}, join("",R("R"),G("G"),B("B"))."\n", '-j -c:R:R -c:G:G -c:B:B -c:R:R');
+is(ansiecho(qw(-j -c:R:R -c:G:G -c:B:B))->{stdout},
+   join("",R("R"),G("G"),B("B"))."\n",
+   '-j -c:R:R -c:G:G -c:B:B -c:R:R');
 
 # -f
 is(ansiecho(qw(-f %s abc))->{stdout}, "abc\n", "-f %s abc");
+is(ansiecho(qw(-f %%))->{stdout}, "%\n", "-f %%");
+is(ansiecho(qw(-f %%%s%% abc))->{stdout}, "%abc%\n", "-f %%%s%% abc");
 is(ansiecho(qw(-f %5s abc))->{stdout}, "  abc\n", "-f %5s abc");
-is(ansiecho(qw(-f %5s -c R abc))->{stdout}, sprintf("  %s\n", R("abc")), "-f %5s -c R abc");
-is(ansiecho(qw(-f %-5s -c R abc))->{stdout}, sprintf("%s  \n", R("abc")), "-f %-5s -c R abc");
+is(ansiecho(qw(-f %5s -c R abc))->{stdout},
+   sprintf("  %s\n", R("abc")),
+   "-f %5s -c R abc");
+is(ansiecho(qw(-f %-5s -c R abc))->{stdout},
+   sprintf("%s  \n", R("abc")),
+   "-f %-5s -c R abc");
+
+is(ansiecho(qw(-f %d 123))->{stdout}, "123\n", "-f %d 123");
+is(ansiecho(qw(-f %d -123))->{stdout}, "-123\n", "-f %d -123");
+is(ansiecho(qw(-f %5d 123))->{stdout}, "  123\n", "-f %5d 123");
+is(ansiecho(qw(-f %05d 123))->{stdout}, "00123\n", "-f %05d 123");
+is(ansiecho(qw(-f %-5d 123))->{stdout}, "123  \n", "-f %-5d 123");
+is(ansiecho(qw(-f %+5d  123))->{stdout}, " +123\n", "-f %+5d 123");
+is(ansiecho(qw(-f %+5d -123))->{stdout}, " -123\n", "-f %+5d -123");
+is(ansiecho('-f', '% 5d',  '123')->{stdout}, "  123\n", "-f '% 5d' 123");
+is(ansiecho('-f', '% 5d', '-123')->{stdout}, " -123\n", "-f '% 5d' -123");
+is(ansiecho(qw(-f %o  123))->{stdout},  "173\n", "-f %o 123");
+is(ansiecho(qw(-f %#o 123))->{stdout}, "0173\n", "-f %#o 123");
 
 # width parameter: *
-is(ansiecho(qw(-f %*s 5 abc))->{stdout}, "  abc\n", "-f %*s 5 abc");
+is(ansiecho(qw(-f %*s 5 abc))->{stdout},
+   "  abc\n", "-f %*s 5 abc");
+is(ansiecho(qw(-f %*.*s 5 5 abc))->{stdout},
+   "  abc\n", "-f %*.*s 5 5 abc");
+is(ansiecho(qw(-f %*.*s 5 5 abcdefg))->{stdout},
+   "abcde\n", "-f %*.*s 5 5 abcdefg");
+
+is(ansiecho(qw(-f %%%*s%% 5 abc))->{stdout},
+   "%  abc%\n", "-f %%%*s%% 5 abc");
+is(ansiecho(qw(-f %0*d 5 123))->{stdout},
+   "00123\n", "-f %0*d 5 123");
+is(ansiecho(qw(-f %-*d 5 123))->{stdout},
+   "123  \n", "-f %-*d 5 123");
+is(ansiecho(qw(-f %-*d 5 -123))->{stdout},
+   "-123 \n", "-f %-*d 5 -123");
+is(ansiecho(qw(-f %0*.*d 5 5 123))->{stdout},
+   "00123\n", "-f %0*.*d 5 5 123");
+is(ansiecho(qw(-f %-*.*d 5 5 123))->{stdout},
+   "00123\n", "-f %-*.*d 5 5 123");
+is(ansiecho(qw(-f %-*.*d 5 5 -123))->{stdout},
+   "-00123\n", "-f %-*.*d 5 5 -123");
 
 # recurtion
-is(ansiecho(qw(-f %5s -c -f %s/%s W R abc))->{stdout}, sprintf("  %s\n", WonR("abc")), "-f %5s -c -f %s/%s W R abc");
-is(ansiecho(qw(-f %5s -c -f %s/%s -f %s W -f %s R abc))->{stdout}, sprintf("  %s\n", WonR("abc")), "-f %5s -c -f %s/%s -f %s W -f %s R abc");
+is(ansiecho(qw(-f %5s -c -f %s/%s W R abc))->{stdout},
+   sprintf("  %s\n", WonR("abc")),
+   "-f %5s -c -f %s/%s W R abc");
+is(ansiecho(qw(-f %5s -c -f %s/%s -f %s W -f %s R abc))->{stdout},
+   sprintf("  %s\n", WonR("abc")),
+   "-f %5s -c -f %s/%s -f %s W -f %s R abc");
 
 TODO: {
 
 local $TODO = "format string recursion";
 
 # recursion
-is(ansiecho(qw(-f -f %%%ds 5 -c R abc))->{stdout}, sprintf("  %s\n", R("abc")), "-f -f %%%ds 5 -c R abc");
+is(ansiecho(qw(-f -f %%%ds 5 -c R abc))->{stdout},
+   sprintf("  %s\n", R("abc")), "-f -f %%%ds 5 -c R abc");
 
 }
 

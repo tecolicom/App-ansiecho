@@ -172,7 +172,8 @@ The result of B<-f> sequence ends up to a single argument, and can be
 a subject of other B<-c> or B<-f> option.
 
 Number of arguments are calculated from the number of C<%> characters
-in the format string except C<%%>.
+in the format string except C<%%>.  Variable width and precision
+parameter C<*> can be used like C<%*s> or C<%*.*s>.
 
 =item B<--separator> I<string>
 

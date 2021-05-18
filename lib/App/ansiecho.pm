@@ -127,10 +127,10 @@ sub param {
 	    my $format = defined $1 ? $1 : shift @in;
 	    $format = safe_backslash($format);
 	    my $n = sum map {
-		($_ eq '%') ? 0 : ($_ eq '*') ? 2 : 1;
-	    } $format =~ /%(.)/g;
+		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
+	    } $format =~ /(?| %(%) | %[-+ #0]*+(\*(?:\.\*)?|.) )/xg;
 	    @in >= $n or die "$arg : not enough arguments.\n";
-	    if (grep { /^-/ } @in[0..$n-1]) {
+	    if (grep { /^-[cf]/ } @in[0..$n-1]) {
 		do { $push->('-f', $format); redo };
 	    }
 	    $append->(ansi_sprintf($format, splice @in, 0, $n));
