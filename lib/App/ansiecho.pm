@@ -24,6 +24,7 @@ has verbose    => ( is => 'ro', default => 1 );
 has no_newline => ( is => 'ro' );
 has join       => ( is => 'ro' );
 has escape     => ( is => 'ro' );
+has rgb24      => ( is => 'ro' );
 has separator  => ( is => 'rw', default => " " );
 
 has terminator => ( is => 'rw', default => "\n" );
@@ -49,6 +50,7 @@ sub run {
 	no_newline | n !
 	join       | j !
 	escape     | e !
+	rgb24          !
 	separator      =s
 	") || pod2usage();
     $app->initialize();
@@ -60,6 +62,9 @@ sub initialize {
     my $app = shift;
     $app->terminator('') if $app->no_newline;
     $app->separator('') if $app->join;
+    if (defined $app->rgb24) {
+	$Getopt::EX::Colormap::RGB24 = !!$app->rgb24;
+    }
 }
 
 use Getopt::EX::Colormap qw(colorize ansi_code);

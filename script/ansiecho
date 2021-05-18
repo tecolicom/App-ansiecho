@@ -22,7 +22,9 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-ansiecho -c R Red -c /G GreenBack -c BS BlueReverse
+ansiecho -c R Red -c K/Y 'Black on Yellow' -c FSDB BlinkReverseBoldBlue
+
+ansiecho -f '[ %12s ]' -c SR -f '%+06d' 123
 
 =head1 DESCRIPTION
 
@@ -56,7 +58,9 @@ respectively. This can be written as below too.
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
 special effects such as I (Italic), D (Double-struck; Bold), S
-(Stand-out; Reverse Video) and more.
+(Stand-out; Reverse Video) and such.
+
+Color example:
 
     RGB  6x6x6    12bit      24bit           color name
     ===  =======  =========  =============  ==================
@@ -67,6 +71,11 @@ special effects such as I (Italic), D (Double-struck; Bold), S
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
 More information is described in L<COLOR SPEC> section.
+
+12bit/24bit colors are converted to 216 colors because most terminal
+can not display them.  If you are using full-color terminal, such as
+iTerm2 on Mac, use B<--rgb24> option or set C<GETOPTEX_RGB24>
+environment variable to produce full-color sequence.
 
 =head2 FORMAT
 
@@ -179,6 +188,11 @@ parameter C<*> can be used like C<%*s> or C<%*.*s>.
 
 Set separator string between each arguments.  Option B<-j> is a
 short-cut for B<--separator ''>.
+
+=item B<-->[B<no>]B<rgb24>
+
+Produce 24bit full-color sequence for 12bit/24bit specified colors.
+They are converted to 216 colors by default.
 
 =back
 
@@ -303,6 +317,8 @@ L<https://en.wikipedia.org/wiki/ANSI_escape_code>
 L<Graphics::ColorNames::X>
 
 L<https://en.wikipedia.org/wiki/X11_color_names>
+
+L<App::ansifold>, L<App::ansicolumn>
 
 =head1 AUTHOR
 

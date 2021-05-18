@@ -9,7 +9,9 @@ Version 0.01
 
 # SYNOPSIS
 
-ansiecho -c R Red -c /G GreenBack -c BS BlueReverse
+ansiecho -c R Red -c K/Y 'Black on Yellow' -c FSDB BlinkReverseBoldBlue
+
+ansiecho -f '\[ %12s \]' -c SR -f '%+06d' 123
 
 # DESCRIPTION
 
@@ -43,7 +45,9 @@ respectively. This can be written as below too.
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
 special effects such as I (Italic), D (Double-struck; Bold), S
-(Stand-out; Reverse Video) and more.
+(Stand-out; Reverse Video) and such.
+
+Color example:
 
     RGB  6x6x6    12bit      24bit           color name
     ===  =======  =========  =============  ==================
@@ -54,6 +58,11 @@ special effects such as I (Italic), D (Double-struck; Bold), S
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
 More information is described in ["COLOR SPEC"](#color-spec) section.
+
+12bit/24bit colors are converted to 216 colors because most terminal
+can not display them.  If you are using full-color terminal, such as
+iTerm2 on Mac, use **--rgb24** option or set `GETOPTEX_RGB24`
+environment variable to produce full-color sequence.
 
 ## FORMAT
 
@@ -162,6 +171,11 @@ them to accumulate the effects.
 
     Set separator string between each arguments.  Option **-j** is a
     short-cut for **--separator ''**.
+
+- **--**\[**no**\]**rgb24**
+
+    Produce 24bit full-color sequence for 12bit/24bit specified colors.
+    They are converted to 216 colors by default.
 
 # STRING LITERAL
 
@@ -284,6 +298,8 @@ Next one works, though.
 [Graphics::ColorNames::X](https://metacpan.org/pod/Graphics::ColorNames::X)
 
 [https://en.wikipedia.org/wiki/X11\_color\_names](https://en.wikipedia.org/wiki/X11_color_names)
+
+[App::ansifold](https://metacpan.org/pod/App::ansifold), [App::ansicolumn](https://metacpan.org/pod/App::ansicolumn)
 
 # AUTHOR
 
