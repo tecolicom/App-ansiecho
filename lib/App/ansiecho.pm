@@ -31,7 +31,7 @@ has terminator => ( is => 'rw', default => "\n" );
 no Moo;
 
 use App::ansiecho::Util;
-use Getopt::EX v1.23;
+use Getopt::EX v1.23.2;
 use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
 
 use List::Util qw(sum);

@@ -1,5 +1,5 @@
 requires 'Encode';
-requires 'Getopt::EX', 'v1.23.0';
+requires 'Getopt::EX', 'v1.23.2';
 requires 'Getopt::EX::Colormap';
 requires 'Getopt::EX::Long';
 requires 'List::Util';
