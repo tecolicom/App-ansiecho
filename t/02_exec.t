@@ -130,7 +130,9 @@ is(ansiecho(qw(-f -f %%%ds 5 -c R abc))->{stdout},
    sprintf("  %s\n", R("abc")), "-f -f %%%ds 5 -c R abc");
 
 # -s, -z, -r
-is(ansiecho(qw(-r -c ))->{stdout}, "-c\n", '-r -c');
+is(ansiecho(qw(-r 0 ))      ->{stdout}, "0\n", '-r 0');
+is(ansiecho(qw(-r0 ))       ->{stdout}, "0\n", '-r0');
+is(ansiecho(qw(-r -c ))     ->{stdout}, "-c\n", '-r -c');
 is(ansiecho(qw(-r -c -r -f))->{stdout}, "-c-f\n", '-r -c -r -f');
 
 is(ansiecho(qw(-s R RED -z ZE))->{stdout}, R("RED")."\n", '-c R RED');

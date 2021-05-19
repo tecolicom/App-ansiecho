@@ -91,7 +91,7 @@ sub retrieve {
 	#
 	if ($arg =~ /^-([szr])(.+)?$/) {
 	    my $opt = $1;
-	    my $text = $2 || shift(@$in) // die "Not enough argument.\n";
+	    my $text = $2 // shift(@$in) // die "Not enough argument.\n";
 	    my $data = $opt eq 'r' ? safe_backslash($text) : ansi_code($text);
 	    if (@out == 0 or $opt eq 's') {
 		push @pending, $data;
