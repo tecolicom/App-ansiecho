@@ -28,6 +28,7 @@ has rgb24      => ( is => 'ro' );
 has separate   => ( is => 'rw', default => " " );
 
 has terminate  => ( is => 'rw', default => "\n" );
+has params     => ( is => 'rw' );
 
 no Moo;
 
@@ -54,8 +55,8 @@ sub run {
 	separate       =s
 	") || pod2usage();
     $app->initialize();
-    print join $app->separate, $app->param(@ARGV);
-    print $app->terminate;
+    $app->params(\@ARGV);
+    print join($app->separate, $app->retrieve()), $app->terminate;
 }
 
 sub initialize {
@@ -72,42 +73,25 @@ sub initialize {
 
 use Getopt::EX::Colormap qw(colorize ansi_code);
 
-sub param {
+sub retrieve {
     my $app = shift;
-    my @in = @_;
+    my $count = shift;
+    my $in = $app->params;
     my @out;
     my @pending;
-    my @stack;
 
-    my $push = sub {
-	push @stack, [ [ splice @pending ], [ splice @out ], @_ ];
-    };
-    my $pop = sub {
-	(my($pending, $out), @in) = @{pop @stack};
-	@pending = @{$pending};
-	push @in, splice @out, 0, 0+@out, @{$out};
-    };
     my $append = sub {
 	push @out, join '', splice(@pending), @_;
     };
-
-    while (@in) {
-	if ($app->debug) {
-	    local $Data::Dumper::Terse = 1;
-	    local $_ = Dumper(\@out, \@pending, \@in);
-	    s/,\n\s*/, /g;
-	    s/]\n(?=.)/], /g;
-	    s/\n(?=.)\s*/ /g;
-	    warn $_;
-	}
-	my $arg = shift @in;
+    while (@$in) {
+	my $arg = shift @$in;
 	#
 	# -r     : raw data
 	# -s, -z : ansi sequence
 	#
 	if ($arg =~ /^-([szr])(.+)?$/) {
 	    my $opt = $1;
-	    my $text = $2 || shift @in;
+	    my $text = $2 || shift(@$in) // die "Not enough argument.\n";
 	    my $data = $opt eq 'r' ? safe_backslash($text) : ansi_code($text);
 	    if (@out == 0 or $opt eq 's') {
 		push @pending, $data;
@@ -126,14 +110,8 @@ sub param {
 		($color, $string) = split $delim, $param, 2;
 	    }
 	    else {
-		$color = defined $param ? $param : do {
-		    @in or die "$arg: : Parameter error.\n";
-		    $in[0] =~ /^-[fsr]/ and do { $push->($arg); redo };
-		    shift @in;
-		};
-		@in or die "$arg: : Parameter error.\n";
-		$in[0] =~ /^-[frs]/ and do { $push->('-c', $color); redo };
-		$string = shift @in;
+		($color) = defined $param ? $param : $app->retrieve(1);
+		($string) = $app->retrieve(1);
 	    }
 	    $string = safe_backslash($string) if $app->escape;
 	    $append->(colorize($color, $string));
@@ -142,31 +120,29 @@ sub param {
 	# -f : format
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
-	    my $format = defined $1 ? $1 : shift @in
-		// die "$arg: Parameter error.\n";
+	    my($format) = defined $1 ? $1 : $app->retrieve(1);
 	    $format = safe_backslash($format);
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
 	    } $format =~ /(?| %(%) | %[-+ #0]*+(\*(?:\.\*)?|.) )/xg;
-	    @in >= $n or die "$arg : not enough arguments.\n";
-	    if (grep { /^-[cf]/ } @in[0..$n-1]) {
-		do { $push->('-f', $format); redo };
-	    }
-	    $append->(ansi_sprintf($format, splice @in, 0, $n));
+	    $append->(ansi_sprintf($format, $app->retrieve($n)));
 	}
 	#
 	# string argument
 	#
 	else {
-	    $append->($app->escape ? safe_backslash($arg) : $arg);
+	    $arg = safe_backslash($arg) if $app->escape;
+	    $append->($arg);
 	}
-    } continue {
-	if (@in == 0) {
-	    @pending and $append->();
-	    # return from recursion
-	    @stack and $pop->();
+
+	if ($count) {
+	    my $out = @out + !!@pending;
+	    die "Unexpected behavior.\n" if $out > $count;
+	    last if $out == $count;
 	}
     }
+    @pending and $append->();
+    die "Not enough argument.\n" if $count and @out < $count;
     return @out;
 }
 
@@ -201,4 +177,3 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-

@@ -7,7 +7,7 @@ use Command::Runner;
 sub ansiecho {
     local @ARGV = @_;
     Command::Runner->new(
-	command => sub { App::ansiecho->new->run(@ARGV) },
+	command => sub { eval { App::ansiecho->new->run(@ARGV) } },
 	stderr  => sub { warn "err: $_[0]\n" },
 	)->run;
 }

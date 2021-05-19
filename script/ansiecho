@@ -170,6 +170,16 @@ argument.
 Append next string to the final argument with backslash escape
 interpretation.
 
+This option can be used to stringify the option argument.  Next
+example does not work without B<-r>.
+
+    ansiecho -c R -r -c
+
+    ansiecho -f %s -r -c
+
+In these cases, be aware that string I<-c> is mixed up with next
+argument.
+
 =item B<-f> I<format> I<args> ...
 
 Print I<args> in the given I<format>.

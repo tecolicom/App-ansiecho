@@ -153,6 +153,16 @@ them to accumulate the effects.
     Append next string to the final argument with backslash escape
     interpretation.
 
+    This option can be used to stringify the option argument.  Next
+    example does not work without **-r**.
+
+        ansiecho -c R -r -c
+
+        ansiecho -f %s -r -c
+
+    In these cases, be aware that string _-c_ is mixed up with next
+    argument.
+
 - **-f** _format_ _args_ ...
 
     Print _args_ in the given _format_.
