@@ -8,17 +8,20 @@ func=(
     c8
 )
 
-while getopts "hvxc:0123456789" OPT; do
+while getopts "hnvxc:0123456789" OPT; do
     case $OPT in
 	h)
-	    echo ${0##*/} -v -c# -[1..${#func[@]}]
+	    echo ${0##*/} -[hnvx] -c# -[1..${#func[@]}]
 	    echo -e "\t-h  : show this message"
+	    echo -e "\t-n  : dry-run"
+	    echo -e "\t-v  : verbose"
 	    echo -e "\t-x  : transpose 216 color"
 	    echo -e "\t-c# : vertical columns"
 	    i=0; for func in ${func[@]}; do
 		printf "\t-%d  : %s\n" $((++i)) $func
 	    done
 	    exit;;
+	n) dryrun=1;;
 	v) verbose=1;;
 	x) xpose=1;;
 	c) column="$OPTARG";;
@@ -117,7 +120,11 @@ ct() {
 	(($# <= column)) && break
 	shift $column
     done
-    ansiecho -jne "${option[@]}" "${args[@]}"
+    if [ $dryrun ]; then
+	echo ansiecho -jne "${option[@]}" "${args[@]}"
+    else
+	ansiecho -jne "${option[@]}" "${args[@]}"
+    fi
 }
 
 mkopt() {
