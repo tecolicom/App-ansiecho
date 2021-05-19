@@ -196,6 +196,13 @@ Number of arguments are calculated from the number of C<%> characters
 in the format string except C<%%>.  Variable width and precision
 parameter C<*> can be used like C<%*s> or C<%*.*s>.
 
+Format string also can be made by B<-f> option.  Next command works,
+but second one is better.
+
+    ansiecho -f -f '%%%ds' 16 hello
+
+    ansiecho -f '%*s' 16 hello
+
 =item B<--separate> I<string>
 
 Set separator string between each arguments.  Option B<-j> is a
@@ -306,17 +313,6 @@ From CPAN archive:
 From GIT repository:
 
     cpanm https://github.com/kaz-utashiro/App-ansiecho.git
-
-=head1 BUGS
-
-Format string can not made by B<-f> option.  Next command does not
-work as you may expect.
-
-    ansiecho -f -f '%%%ds' 16 hello
-
-Next one works, though.
-
-    ansiecho -f '%*s' 16 hello
 
 =head1 SEE ALSO
 

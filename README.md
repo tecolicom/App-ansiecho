@@ -179,6 +179,13 @@ them to accumulate the effects.
     in the format string except `%%`.  Variable width and precision
     parameter `*` can be used like `%*s` or `%*.*s`.
 
+    Format string also can be made by **-f** option.  Next command works,
+    but second one is better.
+
+        ansiecho -f -f '%%%ds' 16 hello
+
+        ansiecho -f '%*s' 16 hello
+
 - **--separate** _string_
 
     Set separator string between each arguments.  Option **-j** is a
@@ -287,17 +294,6 @@ From CPAN archive:
 From GIT repository:
 
     cpanm https://github.com/kaz-utashiro/App-ansiecho.git
-
-# BUGS
-
-Format string can not made by **-f** option.  Next command does not
-work as you may expect.
-
-    ansiecho -f -f '%%%ds' 16 hello
-
-Next one works, though.
-
-    ansiecho -f '%*s' 16 hello
 
 # SEE ALSO
 
