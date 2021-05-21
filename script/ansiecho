@@ -51,11 +51,7 @@ You can specify color of each argument by preceding with B<-c> option:
 
 This command print strings C<a>, C<b> and C<c> according to the color
 spec of C<R> (Red), C<GI> (I<Green Italic>) and C<BD> (B<Blue Bold>)
-respectively. This can be written as below too.
-
-    ansiecho -cR a -cGI b -cBD c
-
-    ansiecho -c:R:a -c:GI:b -c:BD:c
+respectively.
 
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
@@ -155,12 +151,7 @@ Do not print space between arguments.
 
 =item B<-c> I<spec> I<string>
 
-=item B<-c>:I<spec>:I<string>
-
 Print I<string> in a color given by I<spec>.
-
-If the B<-c> is followed by an punctuation character other than
-C< / ^ ~ ; # >, it is used as a delimiter character.
 
 =item B<-f> I<format> I<args> ...
 

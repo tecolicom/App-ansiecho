@@ -38,11 +38,7 @@ You can specify color of each argument by preceding with **-c** option:
 
 This command print strings `a`, `b` and `c` according to the color
 spec of `R` (Red), `GI` (_Green Italic_) and `BD` (**Blue Bold**)
-respectively. This can be written as below too.
-
-    ansiecho -cR a -cGI b -cBD c
-
-    ansiecho -c:R:a -c:GI:b -c:BD:c
+respectively.
 
 Foreground/Background color can be specified by 8+8 standard colors,
 24 gray scales, 6x6x6 216 colors, RGB values or color names, with
@@ -139,12 +135,8 @@ behavior.  See ["STRING LITERAL"](#string-literal) section.
     Do not print space between arguments.
 
 - **-c** _spec_ _string_
-- **-c**:_spec_:_string_
 
     Print _string_ in a color given by _spec_.
-
-    If the **-c** is followed by an punctuation character other than
-    ` / ^ ~ ; # `, it is used as a delimiter character.
 
 - **-f** _format_ _args_ ...
 

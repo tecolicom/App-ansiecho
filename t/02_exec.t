@@ -58,19 +58,14 @@ for my $fg ('RGBCMYKW' =~ /./g) {
 # -c
 is(ansiecho(qw(-c R RED))->{stdout}, R("RED")."\n", '-c R RED');
 is(ansiecho(qw(-cR RED)) ->{stdout}, R("RED")."\n", '-cR RED');
-is(ansiecho(qw(-c:R:RED))->{stdout}, R("RED")."\n", '-c:R:RED');
-
-is(ansiecho(qw(-c:R:R -c:G:G -c:B:B))->{stdout},
-   join(" ",R("R"),G("G"),B("B"))."\n",
-   '-c:R:R -c:G:G -c:B:B -c:R:R');
 
 # -n
 is(ansiecho(qw(-n -c R RED))->{stdout}, R("RED"), '-n');
 
 # -j
-is(ansiecho(qw(-j -c:R:R -c:G:G -c:B:B))->{stdout},
+is(ansiecho(qw(-j -cR R -cG G -cB B))->{stdout},
    join("",R("R"),G("G"),B("B"))."\n",
-   '-j -c:R:R -c:G:G -c:B:B -c:R:R');
+   '-j -cR R -cG G -cB B');
 
 # -f
 is(ansiecho(qw(-f %s abc))      ->{stdout}, "abc\n", "-f %s abc");

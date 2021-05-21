@@ -123,18 +123,9 @@ sub retrieve {
 	#
 	# -c : color
 	#
-	if ($arg =~ /^-c((?![\/\^~;#])\pP)?+(.+)?$/) {
-	    my($delim, $param) = ($1, $2);
-	    my($color, $string);
-	    if ($delim and $param and $param =~ $delim) {
-		($color, $string) = split $delim, $param, 2;
-		$string = safe_backslash($string) if $app->escape;
-	    }
-	    else {
-		($color) = defined $param ? $param : $app->retrieve(1);
-		($string) = $app->retrieve(1);
-	    }
-	    $arg = colorize($color, $string);
+	if ($arg =~ /^-c(.+)?$/) {
+	    my($color) = defined $1 ? $1 : $app->retrieve(1);
+	    $arg = colorize($color, $app->retrieve(1));
 	}
 	#
 	# -f : format
