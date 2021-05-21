@@ -5,7 +5,7 @@ ansiecho - Echo command with ANSI terminal code
 
 # VERSION
 
-Version 0.01
+Version 0.02
 
 # SYNOPSIS
 
