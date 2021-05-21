@@ -177,7 +177,7 @@ Option B<-C> set permanent color which is applied to all following
 arguments until option B<-E> found.
 
 Next command prints only a word C<Yellow> in yellow, but second one
-print C<Yellow>, C<Brick>, and B<Road> in yellow.
+print C<Yellow>, C<Brick>, and C<Road> in yellow.
 
     ansiecho Follow the -cYS Yellow Brick Road
 
@@ -193,7 +193,8 @@ below.
 =item B<-F> I<format>
 
 As with the C<-C> option, C<-F> defines a format which is applied to
-all arguments until option B<-E> found.
+all arguments until option B<-E> found.  Format string have to include
+single C<%s> placeholder.
 
     ansiecho Follow the -CYS -F ' %s ' Yellow Brick Road
 
@@ -205,7 +206,7 @@ arrow.
 
     ansiecho -cRF -f'->%s' -cUD A B C
 
-and next one does the same thing for all arguments.
+Next one does the same thing for all arguments.
 
     ansiecho -CRF -F'->%s' -CUD A B C
 
@@ -377,4 +378,4 @@ it under the same terms as Perl itself.
 
 #  LocalWords:  perl ARGV utf ansiecho RGB printf sprintf deeppink
 #  LocalWords:  lightyellow cpanm Kazumasa Utashiro perlfunc perlop
-#  LocalWords:  Unicode Cyan cyan
+#  LocalWords:  Unicode Cyan cyan stringify CPANMINUS CPAN

@@ -162,7 +162,7 @@ behavior.  See ["STRING LITERAL"](#string-literal) section.
     arguments until option **-E** found.
 
     Next command prints only a word `Yellow` in yellow, but second one
-    print `Yellow`, `Brick`, and **Road** in yellow.
+    print `Yellow`, `Brick`, and `Road` in yellow.
 
         ansiecho Follow the -cYS Yellow Brick Road
 
@@ -178,7 +178,8 @@ behavior.  See ["STRING LITERAL"](#string-literal) section.
 - **-F** _format_
 
     As with the `-C` option, `-F` defines a format which is applied to
-    all arguments until option **-E** found.
+    all arguments until option **-E** found.  Format string have to include
+    single `%s` placeholder.
 
         ansiecho Follow the -CYS -F ' %s ' Yellow Brick Road
 
@@ -190,7 +191,7 @@ behavior.  See ["STRING LITERAL"](#string-literal) section.
 
         ansiecho -cRF -f'->%s' -cUD A B C
 
-    and next one does the same thing for all arguments.
+    Next one does the same thing for all arguments.
 
         ansiecho -CRF -F'->%s' -CUD A B C
 
