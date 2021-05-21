@@ -79,12 +79,29 @@ sub retrieve {
     my $in = $app->params;
     my @out;
     my @pending;
+    my($permcolor, $permformat) = ('', '');
 
     my $append = sub {
 	push @out, join '', splice(@pending), @_;
     };
     while (@$in) {
 	my $arg = shift @$in;
+	#
+	# -C, -F, -E : permanent color/format
+	#
+	if ($arg =~ /^-C(.+)?$/) {
+	    ($permcolor) = $1 // $app->retrieve(1);
+	    next;
+	}
+	if ($arg =~ /^-F(.+)?$/) {
+	    ($permformat) = $1 // $app->retrieve(1);
+	    next;
+	}
+	if ($arg =~ /^-E$/) {
+	    $permcolor = $permformat = '';
+	    next;
+	}
+
 	#
 	# -r     : raw data
 	# -s, -z : ansi sequence
@@ -100,6 +117,7 @@ sub retrieve {
 	    }
 	    next;
 	}
+
 	#
 	# -c : color
 	#
@@ -114,7 +132,7 @@ sub retrieve {
 		($string) = $app->retrieve(1);
 	    }
 	    $string = safe_backslash($string) if $app->escape;
-	    $append->(colorize($color, $string));
+	    $arg = colorize($color, $string);
 	}
 	#
 	# -f : format
@@ -125,15 +143,24 @@ sub retrieve {
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
 	    } $format =~ /(?| %(%) | %[-+ #0]*+(\*(?:\.\*)?|.) )/xg;
-	    $append->(ansi_sprintf($format, $app->retrieve($n)));
+	    $arg = ansi_sprintf($format, $app->retrieve($n));
 	}
 	#
-	# string argument
+	# normal string argument
 	#
 	else {
-	    $arg = safe_backslash($arg) if $app->escape;
-	    $append->($arg);
+	    if ($app->escape) {
+		$arg = safe_backslash($arg);
+	    }
 	}
+
+	if ($permformat ne '') {
+	    $arg = sprintf($permformat, $arg);
+	}
+	if ($permcolor ne '') {
+	    $arg = colorize($permcolor, $arg);
+	}
+	$append->($arg);
 
 	if ($count) {
 	    my $out = @out + !!@pending;

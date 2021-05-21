@@ -9,11 +9,11 @@ Version 0.01
 
 # SYNOPSIS
 
-ansiecho -c S d -c S i -c S g -c S i -c S t -c S a -c S l
-
-ansiecho -c R Red -c K/Y 'Black on Yellow' -c FSDB BlinkReverseBoldBlue
+ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
 
 ansiecho -f '\[ %12s \]' -c SR -f '%+06d' 123
+
+ansiecho -C '555/(132,0,41)' d i g i t a l
 
 # DESCRIPTION
 
@@ -139,6 +139,34 @@ them to accumulate the effects.
 
     If the **-c** is followed by an punctuation character other than
     ` / ^ ~ ; # `, it is used as a delimiter character.
+
+- **-C** _spec_
+
+    Option **-C** set permanent color which is applied to all following
+    arguments until option **-E** found.
+
+    Next command prints only a word `Yellow` in yellow, but second one
+    print `Yellow`, `Brick`, and **Road** in yellow.
+
+        ansiecho Follow the -cYS Yellow Brick Road
+
+        ansiecho Follow the -CYS Yellow Brick Road
+
+    You may want to color the phrase instead.
+
+        ansiecho Follow the -cYS "Yellow Brick Road"
+
+- **-F** _spec_
+
+    Similar to `-C` option, `-F` defines a format which is applied to
+    all arguments until option **-E** found.  Formatting is done before
+    coloring.
+
+        ansiecho Follow the -CYS -F ' %s ' Yellow Brick Road
+
+- **-E** _spec_
+
+    Terminate **-C** and **-F** effects.
 
 - **-s** _spec_
 - **-z** _spec_
