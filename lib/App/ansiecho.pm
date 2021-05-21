@@ -79,26 +79,28 @@ sub retrieve {
     my $in = $app->params;
     my @out;
     my @pending;
-    my @style;
+    my(@style, @effect);
 
     my $append = sub {
 	push @out, join '', splice(@pending), @_;
     };
     while (@$in) {
 	my $arg = shift @$in;
-	#
-	# -C, -F, -E : styles
-	#
-	if ($arg =~ /^-C(.+)?$/) {
-	    my($color) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
-	    unshift @style, [ \&colorize, $color ];
+
+	# -c, -C
+	if ($arg =~ /^-([cC])(.+)?$/) {
+	    my $target = $1 eq 'c' ? \@effect : \@style;
+	    my($color) = defined $2 ? safe_backslash($2) : $app->retrieve(1);
+	    unshift @$target, [ \&colorize, $color ];
 	    next;
 	}
-	if ($arg =~ /^-F(.+)?$/) {
-	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
+	# -F
+	if ($arg =~ /^-(F)(.+)?$/) {
+	    my($format) = defined $2 ? safe_backslash($2) : $app->retrieve(1);
 	    unshift @style, [ \&ansi_sprintf, $format ];
 	    next;
 	}
+	# -E
 	if ($arg =~ /^-E$/) {
 	    @style = ();
 	    next;
@@ -121,16 +123,9 @@ sub retrieve {
 	}
 
 	#
-	# -c : color
-	#
-	if ($arg =~ /^-c(.+)?$/) {
-	    my($color) = defined $1 ? $1 : $app->retrieve(1);
-	    $arg = colorize($color, $app->retrieve(1));
-	}
-	#
 	# -f : format
 	#
-	elsif ($arg =~ /^-f(.+)?$/) {
+	if ($arg =~ /^-f(.+)?$/) {
 	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
@@ -147,10 +142,10 @@ sub retrieve {
 	}
 
 	#
-	# apply styles
+	# apply @effect and @style
 	#
-	for my $style (@style) {
-	    my($func, @opts) = @$style;
+	for (splice(@effect), @style) {
+	    my($func, @opts) = @$_;
 	    $arg = $func->(@opts, $arg);
 	}
 
