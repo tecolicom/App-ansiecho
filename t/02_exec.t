@@ -58,6 +58,7 @@ for my $fg ('RGBCMYKW' =~ /./g) {
 # -c
 is(ansiecho(qw(-c R RED))->{stdout}, R("RED")."\n", '-c R RED');
 is(ansiecho(qw(-cR RED)) ->{stdout}, R("RED")."\n", '-cR RED');
+is(ansiecho(qw(-cR -cG RED))->{stdout}, R(G("RED"))."\n", '-cR -cG RED');
 
 # -n
 is(ansiecho(qw(-n -c R RED))->{stdout}, R("RED"), '-n');
@@ -132,9 +133,13 @@ is(ansiecho(qw(-r0 ))       ->{stdout}, "0\n", '-r0');
 is(ansiecho(qw(-r -c ))     ->{stdout}, "-c\n", '-r -c');
 is(ansiecho(qw(-r -c -r -f))->{stdout}, "-c-f\n", '-r -c -r -f');
 
-is(ansiecho(qw(-s R RED -z ZE))->{stdout}, R("RED")."\n", '-c R RED');
+is(ansiecho(qw(-s R RED -z ZE))->{stdout},
+   R("RED")."\n",
+   '-s R RED -z ZE');
 
-is(ansiecho(qw(-s R RED -r \e[m\e[K))->{stdout}, R("RED")."\n", '-c R RED');
+is(ansiecho(qw(-s R RED -r \e[m\e[K))->{stdout},
+   R("RED")."\n",
+   '-s R RED -r \\e[m\\e[K');
 
 is(ansiecho(qw(-s R RED -z ZE -s G GREEN -z ZE))->{stdout},
    sprintf("%s %s\n",
@@ -166,5 +171,51 @@ is(ansiecho(qw(-s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z))->{stdout},
 	ansi_code("F")."RUISF".ansi_code("Z")."\n",
    ),
    '-s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z');
+
+# -C, -F, -E
+
+is(ansiecho(qw(-C R a b c))->{stdout},
+   join(' ', R('a'), R('b'), R('c'))."\n",
+   '-C R a b c');
+
+is(ansiecho(qw(-CR a b c))->{stdout},
+   join(' ', R('a'), R('b'), R('c'))."\n",
+   '-CR a b c');
+
+is(ansiecho(qw(-C R a b -E c))->{stdout},
+   join(' ', R('a'), R('b'), 'c')."\n",
+   '-C R a b -E c');
+
+is(ansiecho(qw(-F -%s- a b c))->{stdout},
+   join(' ', '-a-', '-b-', '-c-')."\n",
+   '-F -%s- a b c');
+
+is(ansiecho(qw(-F -%s- a b -E c))->{stdout},
+   join(' ', '-a-', '-b-', 'c')."\n",
+   '-F -%s- a b c');
+
+is(ansiecho(qw(-F -%%%s- a b c))->{stdout},
+   join(' ', '-%a-', '-%b-', '-%c-')."\n",
+   '-F -%%%s- a b c');
+
+is(ansiecho(qw(-CR -F -%s- a b c))->{stdout},
+   join(' ', R('-a-'), R('-b-'), R('-c-'))."\n",
+   '-CR -F -%s- a b c');
+
+is(ansiecho(qw(-CR -F -%s- a b -E c))->{stdout},
+   join(' ', R('-a-'), R('-b-'), 'c')."\n",
+   '-CR -F -%s- a b -E c');
+
+is(ansiecho(qw(-CR -F-%s- a b c))->{stdout},
+   join(' ', R('-a-'), R('-b-'), R('-c-'))."\n",
+   '-CR -F-%s- a b c');
+
+is(ansiecho(qw(-F -%s- -CR a b c))->{stdout},
+   join(' ', '-'.R('a').'-', '-'.R('b').'-', '-'.R('c').'-')."\n",
+   '-F -%s- -CR a b c');
+
+is(ansiecho(qw(-F [%s] -F -%s- -CR a b c))->{stdout},
+   join(' ', '[-'.R('a').'-]', '[-'.R('b').'-]', '[-'.R('c').'-]')."\n",
+   '-F [%s] -F -%s- -CR a b c');
 
 done_testing;
