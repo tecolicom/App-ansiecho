@@ -119,14 +119,20 @@ them to accumulate the effects.
 
 # OPTIONS
 
+In general, argument strings can include backslash escaped characters.
+For example, `\n` stands for a new line.  As for normal argument
+other than option parameter, option **--escape** can control this
+behavior.  See ["STRING LITERAL"](#string-literal) section.
+
 - **-n**
 
     Do not print newline at the end.
 
-- **-e**
+- **-e**, **--**\[**-no**\]**escape**
 
     Enable interpretation of backslash escapes in the normal string
-    argument.  See ["STRING LITERAL"](#string-literal) section.
+    argument.  This option is enabled by default, unlink normal [echo(1)](http://man.he.net/man1/echo)
+    command.  Use **--no-escape** to disable it.
 
 - **-j**, **--join**
 
@@ -135,10 +141,28 @@ them to accumulate the effects.
 - **-c** _spec_ _string_
 - **-c**:_spec_:_string_
 
-    Print _string_ in the color given by _spec_.
+    Print _string_ in a color given by _spec_.
 
     If the **-c** is followed by an punctuation character other than
     ` / ^ ~ ; # `, it is used as a delimiter character.
+
+- **-f** _format_ _args_ ...
+
+    Print _args_ in a given _format_.
+
+    The result of **-f** sequence ends up to a single argument, and can be
+    a subject of other **-c** or **-f** option.
+
+    Number of arguments are calculated from the number of `%` characters
+    in the format string except `%%`.  Variable width and precision
+    parameter `*` can be used like `%*s` or `%*.*s`.
+
+    Format string also can be made by **-f** option.  Next command works,
+    but second one is better.
+
+        ansiecho -f -f '%%%ds' 16 hello
+
+        ansiecho -f '%*s' 16 hello
 
 - **-C** _spec_
 
@@ -156,13 +180,27 @@ them to accumulate the effects.
 
         ansiecho Follow the -cYS "Yellow Brick Road"
 
-- **-F** _spec_
+    Option `-C` can be used multiple times mixed with `-F` option.  See
+    below.
 
-    Similar to `-C` option, `-F` defines a format which is applied to
-    all arguments until option **-E** found.  Formatting is done before
-    coloring.
+- **-F** _format_
+
+    As with the `-C` option, `-F` defines a format which is applied to
+    all arguments until option **-E** found.
 
         ansiecho Follow the -CYS -F ' %s ' Yellow Brick Road
+
+    Option **-C** and **-F** can be used repeatedly, and they will take
+    effect in the reverse order of their appearance.
+
+    Next command show argument `A` in underline/bold with blinking red
+    arrow.
+
+        ansiecho -cRF -f'->%s' -cUD A B C
+
+    and next one does the same thing for all arguments.
+
+        ansiecho -CRF -F'->%s' -CUD A B C
 
 - **-E** _spec_
 
@@ -190,29 +228,6 @@ them to accumulate the effects.
 
     In these cases, be aware that string _-c_ is mixed up with next
     argument.
-
-- **-f** _format_ _args_ ...
-
-    Print _args_ in the given _format_.
-
-    In the format string, backslash escaped character can be used.  For
-    example, `\n` stands for new line character.  This is done by Perl
-    `printf` function.  See ["sprintf" in perlfunc](https://metacpan.org/pod/perlfunc#sprintf) and ["Quote and
-    Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote-like-Operators) for detail.
-
-    The result of **-f** sequence ends up to a single argument, and can be
-    a subject of other **-c** or **-f** option.
-
-    Number of arguments are calculated from the number of `%` characters
-    in the format string except `%%`.  Variable width and precision
-    parameter `*` can be used like `%*s` or `%*.*s`.
-
-    Format string also can be made by **-f** option.  Next command works,
-    but second one is better.
-
-        ansiecho -f -f '%%%ds' 16 hello
-
-        ansiecho -f '%*s' 16 hello
 
 - **--separate** _string_
 

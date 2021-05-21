@@ -23,7 +23,7 @@ has debug      => ( is => 'ro' );
 has verbose    => ( is => 'ro', default => 1 );
 has no_newline => ( is => 'ro' );
 has join       => ( is => 'ro' );
-has escape     => ( is => 'ro' );
+has escape     => ( is => 'ro', default => 1 );
 has rgb24      => ( is => 'ro' );
 has separate   => ( is => 'rw', default => " " );
 
@@ -79,7 +79,7 @@ sub retrieve {
     my $in = $app->params;
     my @out;
     my @pending;
-    my($permcolor, $permformat) = ('', '');
+    my @style;
 
     my $append = sub {
 	push @out, join '', splice(@pending), @_;
@@ -87,18 +87,20 @@ sub retrieve {
     while (@$in) {
 	my $arg = shift @$in;
 	#
-	# -C, -F, -E : permanent color/format
+	# -C, -F, -E : styles
 	#
 	if ($arg =~ /^-C(.+)?$/) {
-	    ($permcolor) = $1 // $app->retrieve(1);
+	    my($color) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
+	    unshift @style, [ \&colorize, $color ];
 	    next;
 	}
 	if ($arg =~ /^-F(.+)?$/) {
-	    ($permformat) = $1 // $app->retrieve(1);
+	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
+	    unshift @style, [ \&ansi_sprintf, $format ];
 	    next;
 	}
 	if ($arg =~ /^-E$/) {
-	    $permcolor = $permformat = '';
+	    @style = ();
 	    next;
 	}
 
@@ -126,20 +128,19 @@ sub retrieve {
 	    my($color, $string);
 	    if ($delim and $param and $param =~ $delim) {
 		($color, $string) = split $delim, $param, 2;
+		$string = safe_backslash($string) if $app->escape;
 	    }
 	    else {
 		($color) = defined $param ? $param : $app->retrieve(1);
 		($string) = $app->retrieve(1);
 	    }
-	    $string = safe_backslash($string) if $app->escape;
 	    $arg = colorize($color, $string);
 	}
 	#
 	# -f : format
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
-	    my($format) = defined $1 ? $1 : $app->retrieve(1);
-	    $format = safe_backslash($format);
+	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
 	    } $format =~ /(?| %(%) | %[-+ #0]*+(\*(?:\.\*)?|.) )/xg;
@@ -154,12 +155,14 @@ sub retrieve {
 	    }
 	}
 
-	if ($permformat ne '') {
-	    $arg = sprintf($permformat, $arg);
+	#
+	# apply styles
+	#
+	for my $style (@style) {
+	    my($func, @opts) = @$style;
+	    $arg = $func->(@opts, $arg);
 	}
-	if ($permcolor ne '') {
-	    $arg = colorize($permcolor, $arg);
-	}
+
 	$append->($arg);
 
 	if ($count) {

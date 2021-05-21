@@ -19,17 +19,19 @@ is(ansiecho(qw(--separate=: a b c))->{stdout}, "a:b:c\n", '--seprate=: a b c');
 
 SKIP: {
 
-skip if !$^V or $^V lt v5.16.0;
-
 my $smiley =
     sub { eval sprintf q("\\N{%s}"), $_[0] }->("WHITE SMILING FACE")
     or skip "Unicode charname is not supported.";
 
-is(ansiecho('\N{WHITE SMILING FACE}')->{stdout},
+is(ansiecho('--no-escape', '\N{WHITE SMILING FACE}')->{stdout},
    '\N{WHITE SMILING FACE}'."\n",
    '\N{WHITE SMILING FACE}');
 
-is(ansiecho('-e', '\N{WHITE SMILING FACE}')->{stdout},
+is(ansiecho('\N{WHITE SMILING FACE}')->{stdout},
+   "$smiley\n",
+   '-e \N{WHITE SMILING FACE}');
+
+is(ansiecho('--escape', '\N{WHITE SMILING FACE}')->{stdout},
    "$smiley\n",
    '-e \N{WHITE SMILING FACE}');
 
