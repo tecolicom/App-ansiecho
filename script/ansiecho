@@ -142,7 +142,7 @@ Do not print newline at the end.
 =item B<-e>, B<-->[B<-no>]B<escape>
 
 Enable interpretation of backslash escapes in the normal string
-argument.  This option is enabled by default, unlink normal L<echo(1)>
+argument.  This option is enabled by default, unlike normal L<echo(1)>
 command.  Use B<--no-escape> to disable it.
 
 =item B<-j>, B<--join>
