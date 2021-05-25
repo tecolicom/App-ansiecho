@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-ansiecho - Echo command with ANSI terminal code
+ansiecho - Colored echo command using ANSI terminal sequence
 
 =head1 VERSION
 
@@ -43,7 +43,16 @@ Like L<echo> command, option B<-n> disables to print newline at the
 end.  Option B<-j> (or B<--join>) removes white space between
 arguments.
 
-=head2 COLOR
+Arguments can include backslash escaped characters, such as C<\n> for
+a new line.  There is an bash-echo-comptible B<-e> option, but it is
+enabled by default.  You can include control and named Unicode
+characters using this.
+
+    ansiecho '\t\N{ALARM CLOCK}\a'
+
+See L<STRING LITERAL> section for detail.
+
+=head2 COLOR and EFFECT
 
 You can specify color of each argument by preceding with B<-c> option:
 
@@ -53,27 +62,15 @@ This command print strings C<a>, C<b> and C<c> according to the color
 spec of C<R> (Red), C<GI> (I<Green Italic>) and C<BD> (B<Blue Bold>)
 respectively.
 
-Foreground/Background color can be specified by 8+8 standard colors,
-24 gray scales, 6x6x6 216 colors, RGB values or color names, with
-special effects such as I (Italic), D (Double-struck; Bold), S
-(Stand-out; Reverse Video) and such.
+Foreground and background color is specified in the form of
+C<fore/back>.
 
-Color example:
+    ansiecho -c B/M 'Blue on Magenta' -c '<pink>/<salmon>' fish
 
-    RGB  6x6x6    12bit      24bit           color name
-    ===  =======  =========  =============  ==================
-    B    005      #00F       (0,0,255)      <blue>
-     /M     /505      /#F0F   /(255,0,255)  /<magenta>
-    K/W  000/555  #000/#FFF  000000/FFFFFF  <black>/<white>
-    R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
-    W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
-
-More information is described in L<COLOR SPEC> section.
-
-12bit/24bit colors are converted to 216 colors because most terminal
-can not display them.  If you are using full-color terminal, such as
-iTerm2 on Mac, use B<--rgb24> option or set C<GETOPTEX_RGB24>
-environment variable to produce full-color sequence.
+Color can be described by 8+8 standard colors, 24 gray scales, 6x6x6
+216 colors, RGB values or color names, with special effects such as I
+(Italic), D (Double-struck; Bold), S (Stand-out; Reverse Video) and
+such.  More information is described in L<COLOR SPEC> section.
 
 =head2 FORMAT
 
@@ -86,8 +83,8 @@ You can use backslash escape characters in the format string.
 See L<STRING LITERAL> section.
 
 Formatted result becomes a single argument, and can be a subject of
-other operation.  In next example, numbers are formatted, colored, and
-gave to other format.
+other operation.  In the next example, numbers are formatted, colored,
+and gave to other format.
 
     ansiecho -f '\N{ALARM CLOCK} %s' -c KF/544 -f ' %02d:%02d:%02d ' 1 2 3
 
@@ -113,6 +110,9 @@ and the next with full-color terminal:
 
     ^[[38;2;255;20;147;48;2;255;255;224m
 
+If you uses B<ansiecho> in a speed concious shell script, it is
+probably a good idea to save these sequences in variables before use.
+
 Option B<-z> does almost same thing, but it append a sequence to the
 final argument.  Next two commands are equivalent.
 
@@ -128,26 +128,29 @@ them to accumulate the effects.
 
 =head1 OPTIONS
 
-In general, argument strings can include backslash escaped characters.
-For example, C<\n> stands for a new line.  As for normal argument
-other than option parameter, option B<--escape> can control this
-behavior.  See L<STRING LITERAL> section.
-
 =over 7
 
 =item B<-n>
 
 Do not print newline at the end.
 
-=item B<-e>, B<-->[B<-no>]B<escape>
+=item B<-e>, B<-->[B<no->]B<escape>
 
 Enable interpretation of backslash escapes in the normal string
-argument.  This option is enabled by default, unlike normal L<echo(1)>
-command.  Use B<--no-escape> to disable it.
+argument.  This option is enabled by default, unlike bash built-in
+L<echo(1)> command.  Use B<--no-escape> to disable it.
 
 =item B<-j>, B<--join>
 
-Do not print space between arguments.
+Do not print space between arguments.  This is a short-cut for
+C<--separate ''>.
+
+=back
+
+Above options can be mixed up together, like C<-nej>.  Following
+options have to appear individually.
+
+=over 7
 
 =item B<-c> I<spec> I<string>
 
@@ -155,7 +158,8 @@ Print I<string> in a color given by I<spec>.
 
 =item B<-f> I<format> I<args> ...
 
-Print I<args> in a given I<format>.
+Print I<args> in a given I<format>.  Backslash escape is always
+interpreted in the format string.
 
 The result of B<-f> sequence ends up to a single argument, and can be
 a subject of other B<-c> or B<-f> option.
@@ -335,6 +339,13 @@ Samples:
     R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
+=head1 256/24BIT COLORS
+
+12bit/24bit colors are converted to 216 colors because most terminal
+can not display them.  If you are using full-color terminal, such as
+iTerm2 on Mac, use B<--rgb24> option or set C<GETOPTEX_RGB24>
+environment variable to produce full-color sequence.
+
 =head1 INSTALL
 
 =head2 CPANMINUS
@@ -378,4 +389,4 @@ it under the same terms as Perl itself.
 
 #  LocalWords:  perl ARGV utf ansiecho RGB printf sprintf deeppink
 #  LocalWords:  lightyellow cpanm Kazumasa Utashiro perlfunc perlop
-#  LocalWords:  Unicode Cyan cyan stringify CPANMINUS CPAN
+#  LocalWords:  Unicode Cyan cyan stringify CPANMINUS CPAN args
