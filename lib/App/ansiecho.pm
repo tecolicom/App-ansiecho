@@ -107,25 +107,28 @@ sub retrieve {
 	}
 
 	#
-	# -r     : raw data
-	# -s, -z : ansi sequence
+	# -r         : raw data
+	# -S, -s, -z : ansi sequence
 	#
-	if ($arg =~ /^-([szr])(.+)?$/) {
+	if ($arg =~ /^-([Sszr])(.+)?$/) {
 	    my $opt = $1;
 	    my $text = $2 // shift(@$in) // die "Not enough argument.\n";
 	    my $data = $opt eq 'r' ? safe_backslash($text) : ansi_code($text);
-	    if (@out == 0 or $opt eq 's') {
-		push @pending, $data;
+	    if ($opt eq 'S') {
+		$arg = $data;
 	    } else {
-		$out[-1] .= $data;
+		if (@out == 0 or $opt eq 's') {
+		    push @pending, $data;
+		} else {
+		    $out[-1] .= $data;
+		}
+		next;
 	    }
-	    next;
 	}
-
 	#
 	# -f : format
 	#
-	if ($arg =~ /^-f(.+)?$/) {
+	elsif ($arg =~ /^-f(.+)?$/) {
 	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
 	    my $n = sum map {
 		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1

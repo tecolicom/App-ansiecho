@@ -74,13 +74,13 @@ such.  More information is described in L<COLOR SPEC> section.
 
 =head2 FORMAT
 
-Format string can be specified with B<-f> option, and it behaves like
-a L<printf> command.
+Format string can be specified by B<-f> option, and it behaves like a
+L<printf> command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
-You can use backslash escape characters in the format string.
-See L<STRING LITERAL> section.
+As in above example, colored text can be given as an argument for
+B<-f> option, and string width is calculated as you expect.
 
 Formatted result becomes a single argument, and can be a subject of
 other operation.  In the next example, numbers are formatted, colored,
@@ -93,14 +93,11 @@ L<perlfunc/sprintf> for detail.
 
 =head2 ANSI SEQUENCE
 
-With normal usage, B<ansiecho> print given argument with introducer
-and reset sequences.
-
-To get just a desired sequence, use B<-s> option.  Next example
-produce ANSI terminal sequence to indicate C<deeppink> color with
+To get desired ANSI sequence, use B<-S> option.  Next example produce
+ANSI terminal sequence to indicate C<deeppink> color with
 C<lightyellow> background.
 
-    ansiecho -n -s '<deeppink>/<lightyellow>'
+    ansiecho -n -S '<deeppink>/<lightyellow>'
 
 You will get the next result with 256-color terminal:
 
@@ -110,21 +107,28 @@ and the next with full-color terminal:
 
     ^[[38;2;255;20;147;48;2;255;255;224m
 
-If you uses B<ansiecho> in a speed concious shell script, it is
-probably a good idea to save these sequences in variables before use.
+Using B<-S> option, you can set multiple ANSI sequences at once in a
+shell script.  Next B<bash> code will initialize array variable
+C<color> with the sequence for given color specs.
 
-Option B<-z> does almost same thing, but it append a sequence to the
-final argument.  Next two commands are equivalent.
+    read -a color < <( ansiecho -S ZE -S K/544 -S K/454 -S K/445 )
 
-    ansiecho -c R Red
-    ansiecho -s R Red -z ZE
+Then use this variable like:
 
-Color spec C<ZE> produces RESET and ERASE LINE sequence.
+    reset=${color[0]}
+    echo "${color[1]} COLOR 1 ${reset}"
+    echo "${color[2]} COLOR 2 ${reset}"
+    echo "${color[3]} COLOR 3 ${reset}"
 
-Because B<-s> and B<-z> does not produce RESET sequence, you can use
-them to accumulate the effects.
+Of course, you can do the same thing by calling B<ansiecho> command
+directly.
 
-    ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
+   ansiecho -c K/544 " COLOR 1 "
+   ansiecho -c K/454 " COLOR 2 "
+   ansiecho -c K/544 " COLOR 3 "
+
+However, calling B<ansiecho> many times is not a good idea when the
+script is time-conscious.
 
 =head1 OPTIONS
 
@@ -223,9 +227,25 @@ Terminate B<-C> and B<-F> effects.
 =item B<-z> I<spec>
 
 Add raw ANSI sequence given by I<spec>.  Option B<-s> add the sequence
-to the new argument, while B<-z> add to the final argument.  There are
-no difference when used with B<-j> option or with single-or-less
-argument.
+to the next argument, while B<-z> add to the final argument.
+
+Next two commands are equivalent.
+
+    ansiecho -c R Red
+    ansiecho -s R Red -z ZE
+
+Color spec C<ZE> produces RESET and ERASE LINE sequence.
+
+Because B<-s> and B<-z> does not produce RESET sequence, you can use
+them to accumulate the effects.
+
+    ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
+
+=item B<-S> I<spec>
+
+Echo raw ANSI sequence given by I<spec> as an argument.
+
+=begin comment
 
 =item B<-r> I<string> (raw)
 
@@ -241,6 +261,8 @@ example does not work without B<-r>.
 
 In these cases, be aware that string I<-c> is mixed up with next
 argument.
+
+=end comment
 
 =item B<--separate> I<string>
 
