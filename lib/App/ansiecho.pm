@@ -105,19 +105,23 @@ sub retrieve {
 	    @style = ();
 	    next;
 	}
+	# -S
+	if ($arg =~ /^-S$/) {
+	    unshift @style, [ \&ansi_code ];
+	    next;
+	}
 
 	#
-	# -r         : raw data
-	# -S, -s, -z : ansi sequence
+	# -s, -i, -a : ANSI sequence
 	#
-	if ($arg =~ /^-([Sszr])(.+)?$/) {
+	if ($arg =~ /^-([sia])(.+)?$/) {
 	    my $opt = $1;
 	    my $text = $2 // shift(@$in) // die "Not enough argument.\n";
-	    my $data = $opt eq 'r' ? safe_backslash($text) : ansi_code($text);
-	    if ($opt eq 'S') {
+	    my $data = ansi_code($text);
+	    if ($opt eq 's') {
 		$arg = $data;
 	    } else {
-		if (@out == 0 or $opt eq 's') {
+		if (@out == 0 or $opt eq 'i') {
 		    push @pending, $data;
 		} else {
 		    $out[-1] .= $data;

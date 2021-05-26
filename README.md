@@ -31,7 +31,7 @@ end.  Option **-j** (or **--join**) removes white space between
 arguments.
 
 Arguments can include backslash escaped characters, such as `\n` for
-a new line.  There is an bash-echo-comptible **-e** option, but it is
+a new line.  There is an bash-echo-compatible **-e** option, but it is
 enabled by default.  You can include control and named Unicode
 characters using this.
 
@@ -62,12 +62,12 @@ such.  More information is described in ["COLOR SPEC"](#color-spec) section.
 ## FORMAT
 
 Format string can be specified by **-f** option, and it behaves like a
-[printf](https://metacpan.org/pod/printf) command.
+[printf(1)](http://man.he.net/man1/printf) command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
 As in above example, colored text can be given as an argument for
-**-f** option, and string width is calculated as you expect.
+**-f** option, and the string width is calculated as you expect.
 
 Formatted result becomes a single argument, and can be a subject of
 other operation.  In the next example, numbers are formatted, colored,
@@ -80,17 +80,17 @@ Formatting is done by Perl `sprintf` function.  See
 
 ## ANSI SEQUENCE
 
-To get desired ANSI sequence, use **-S** option.  Next example produce
-ANSI terminal sequence to indicate `deeppink` color with
-`lightyellow` background.
+To get desired ANSI sequence, use **-s** option.  Next example produce
+ANSI terminal sequence to indicate `deeppink` color on `lightyellow`
+background.
 
-    ansiecho -n -S '<deeppink>/<lightyellow>'
+    ansiecho -n -s '<deeppink>/<lightyellow>'
 
-You will get the next result with 256-color terminal:
+You will get the next result for the 256-color terminal:
 
     ^[[38;5;198;48;5;230m
 
-and the next with full-color terminal:
+and the next for the full-color terminal:
 
     ^[[38;2;255;20;147;48;2;255;255;224m
 
@@ -98,7 +98,7 @@ Using **-S** option, you can set multiple ANSI sequences at once in a
 shell script.  Next **bash** code will initialize array variable
 `color` with the sequence for given color specs.
 
-    read -a color < <( ansiecho -S ZE -S K/544 -S K/454 -S K/445 )
+    read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 Then use this variable like:
 
@@ -140,6 +140,10 @@ options have to appear individually.
 - **-c** _spec_ _string_
 
     Print _string_ in a color given by _spec_.
+
+- **-s** _spec_
+
+    Echo raw ANSI sequence given by _spec_ as an argument.
 
 - **-f** _format_ _args_ ...
 
@@ -199,31 +203,40 @@ options have to appear individually.
 
         ansiecho -CRF -F'->%s' -CUD A B C
 
+- **-S**
+
+    If option `-S` found, all following argument is considered as a color
+    spec given to **-s** option, until option **-E** found.
+
+    Next two commands are equivalent.
+
+        ansiecho -s ZE -s K/544 -s K/454 -s K/445
+
+        ansiecho -S ZE K/544 K/454 K/445
+
 - **-E** _spec_
 
-    Terminate **-C** and **-F** effects.
+    Terminate **-C**, **-F** and **-S** effects.
 
-- **-s** _spec_
-- **-z** _spec_
+- **-i** _spec_
+- **-a** _spec_
 
-    Add raw ANSI sequence given by _spec_.  Option **-s** add the sequence
-    to the next argument, while **-z** add to the final argument.
+    Add raw ANSI sequence given by _spec_.  Option **-i** insert the
+    sequence before the next argument, while **-a** append to the final
+    argument.
 
     Next two commands are equivalent.
 
         ansiecho -c R Red
-        ansiecho -s R Red -z ZE
+
+        ansiecho -i R Red -a ZE
 
     Color spec `ZE` produces RESET and ERASE LINE sequence.
 
-    Because **-s** and **-z** does not produce RESET sequence, you can use
+    Because **-i** and **-a** does not produce RESET sequence, you can use
     them to accumulate the effects.
 
-        ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
-
-- **-S** _spec_
-
-    Echo raw ANSI sequence given by _spec_ as an argument.
+        ansiecho -i R R -i U RU -i I RUI -i S RUIS -i F RUISF -a Z
 
 - **--separate** _string_
 
@@ -238,7 +251,8 @@ options have to appear individually.
 # STRING LITERAL
 
 This is a backslash escape samples described in ["Quote and
-Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote-like-Operators).
+Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote-like-Operators).  Non-alphabetical character after backslash is
+always correspond to the character itself.
 
     Sequence     Description
     \t           tab               (HT, TAB)

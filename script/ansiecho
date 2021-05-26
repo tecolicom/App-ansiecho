@@ -44,7 +44,7 @@ end.  Option B<-j> (or B<--join>) removes white space between
 arguments.
 
 Arguments can include backslash escaped characters, such as C<\n> for
-a new line.  There is an bash-echo-comptible B<-e> option, but it is
+a new line.  There is an bash-echo-compatible B<-e> option, but it is
 enabled by default.  You can include control and named Unicode
 characters using this.
 
@@ -75,12 +75,12 @@ such.  More information is described in L<COLOR SPEC> section.
 =head2 FORMAT
 
 Format string can be specified by B<-f> option, and it behaves like a
-L<printf> command.
+L<printf(1)> command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
 As in above example, colored text can be given as an argument for
-B<-f> option, and string width is calculated as you expect.
+B<-f> option, and the string width is calculated as you expect.
 
 Formatted result becomes a single argument, and can be a subject of
 other operation.  In the next example, numbers are formatted, colored,
@@ -93,17 +93,17 @@ L<perlfunc/sprintf> for detail.
 
 =head2 ANSI SEQUENCE
 
-To get desired ANSI sequence, use B<-S> option.  Next example produce
-ANSI terminal sequence to indicate C<deeppink> color with
-C<lightyellow> background.
+To get desired ANSI sequence, use B<-s> option.  Next example produce
+ANSI terminal sequence to indicate C<deeppink> color on C<lightyellow>
+background.
 
-    ansiecho -n -S '<deeppink>/<lightyellow>'
+    ansiecho -n -s '<deeppink>/<lightyellow>'
 
-You will get the next result with 256-color terminal:
+You will get the next result for the 256-color terminal:
 
     ^[[38;5;198;48;5;230m
 
-and the next with full-color terminal:
+and the next for the full-color terminal:
 
     ^[[38;2;255;20;147;48;2;255;255;224m
 
@@ -111,7 +111,7 @@ Using B<-S> option, you can set multiple ANSI sequences at once in a
 shell script.  Next B<bash> code will initialize array variable
 C<color> with the sequence for given color specs.
 
-    read -a color < <( ansiecho -S ZE -S K/544 -S K/454 -S K/445 )
+    read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 Then use this variable like:
 
@@ -159,6 +159,10 @@ options have to appear individually.
 =item B<-c> I<spec> I<string>
 
 Print I<string> in a color given by I<spec>.
+
+=item B<-s> I<spec>
+
+Echo raw ANSI sequence given by I<spec> as an argument.
 
 =item B<-f> I<format> I<args> ...
 
@@ -218,51 +222,41 @@ Next one does the same thing for all arguments.
 
     ansiecho -CRF -F'->%s' -CUD A B C
 
+=item B<-S>
+
+If option C<-S> found, all following argument is considered as a color
+spec given to B<-s> option, until option B<-E> found.
+
+Next two commands are equivalent.
+
+    ansiecho -s ZE -s K/544 -s K/454 -s K/445
+
+    ansiecho -S ZE K/544 K/454 K/445
+
 =item B<-E> I<spec>
 
-Terminate B<-C> and B<-F> effects.
+Terminate B<-C>, B<-F> and B<-S> effects.
 
-=item B<-s> I<spec>
+=item B<-i> I<spec>
 
-=item B<-z> I<spec>
+=item B<-a> I<spec>
 
-Add raw ANSI sequence given by I<spec>.  Option B<-s> add the sequence
-to the next argument, while B<-z> add to the final argument.
+Add raw ANSI sequence given by I<spec>.  Option B<-i> insert the
+sequence before the next argument, while B<-a> append to the final
+argument.
 
 Next two commands are equivalent.
 
     ansiecho -c R Red
-    ansiecho -s R Red -z ZE
+
+    ansiecho -i R Red -a ZE
 
 Color spec C<ZE> produces RESET and ERASE LINE sequence.
 
-Because B<-s> and B<-z> does not produce RESET sequence, you can use
+Because B<-i> and B<-a> does not produce RESET sequence, you can use
 them to accumulate the effects.
 
-    ansiecho -s R R -s U RU -s I RUI -s S RUIS -s F RUISF -z Z
-
-=item B<-S> I<spec>
-
-Echo raw ANSI sequence given by I<spec> as an argument.
-
-=begin comment
-
-=item B<-r> I<string> (raw)
-
-Append next string to the final argument with backslash escape
-interpretation.
-
-This option can be used to stringify the option argument.  Next
-example does not work without B<-r>.
-
-    ansiecho -c R -r -c
-
-    ansiecho -f %s -r -c
-
-In these cases, be aware that string I<-c> is mixed up with next
-argument.
-
-=end comment
+    ansiecho -i R R -i U RU -i I RUI -i S RUIS -i F RUISF -a Z
 
 =item B<--separate> I<string>
 
@@ -279,7 +273,8 @@ They are converted to 216 colors by default.
 =head1 STRING LITERAL
 
 This is a backslash escape samples described in L<perlop/"Quote and
-Quote-like Operators">.
+Quote-like Operators">.  Non-alphabetical character after backslash is
+always correspond to the character itself.
 
     Sequence     Description
     \t           tab               (HT, TAB)
@@ -411,4 +406,5 @@ it under the same terms as Perl itself.
 
 #  LocalWords:  perl ARGV utf ansiecho RGB printf sprintf deeppink
 #  LocalWords:  lightyellow cpanm Kazumasa Utashiro perlfunc perlop
-#  LocalWords:  Unicode Cyan cyan stringify CPANMINUS CPAN args
+#  LocalWords:  Unicode Cyan cyan stringify CPANMINUS CPAN args ESC
+#  LocalWords:  chr iTerm rgb GETOPTEX
