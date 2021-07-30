@@ -38,7 +38,7 @@ is(ansiecho('\N{WHITE SMILING FACE}')->{stdout},
 
 is(ansiecho('--escape', '\N{WHITE SMILING FACE}')->{stdout},
    "$smiley\n",
-   '-e \N{WHITE SMILING FACE}');
+   '--escape \N{WHITE SMILING FACE}');
 
 }
 

@@ -22,11 +22,17 @@ Version 0.02
 
 =head1 SYNOPSIS
 
-ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
+ansiecho [ options ] args ...
 
-ansiecho -f '[ %12s ]' -c SR -f '%+06d' 123
+EXAMPLE:
 
-ansiecho -C '555/(132,0,41)' d i g i t a l
+    ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
+
+    ansiecho -f '[ %12s ]' -c SR -f '%+06d' 123
+
+    ansiecho -C '555/(132,0,41)' d i g i t a l
+
+    read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 =head1 DESCRIPTION
 
@@ -108,27 +114,25 @@ and the next for the full-color terminal:
     ^[[38;2;255;20;147;48;2;255;255;224m
 
 Using B<-S> option, you can set multiple ANSI sequences at once in a
-shell script.  Next B<bash> code will initialize array variable
-C<color> with the sequence for given color specs.
+shell script.  Next B<bash> code will initialize multiple variables
+with the sequence for given color specs.
+
+    read ZE C1 C2 C3 < <( ansiecho -S ZE K/544 K/454 K/445 )
+
+Or you can set array variable.
 
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 Then use this variable like:
 
+    echo "${C1} COLOR 1 ${ZE}"
+    echo "${C2} COLOR 2 ${ZE}"
+    echo "${C3} COLOR 3 ${ZE}"
+
     reset=${color[0]}
     echo "${color[1]} COLOR 1 ${reset}"
     echo "${color[2]} COLOR 2 ${reset}"
     echo "${color[3]} COLOR 3 ${reset}"
-
-Of course, you can do the same thing by calling B<ansiecho> command
-directly.
-
-   ansiecho -c K/544 " COLOR 1 "
-   ansiecho -c K/454 " COLOR 2 "
-   ansiecho -c K/544 " COLOR 3 "
-
-However, calling B<ansiecho> many times is not a good idea when the
-script is time-conscious.
 
 =head1 OPTIONS
 
@@ -156,13 +160,13 @@ options have to appear individually.
 
 =over 7
 
+=item B<-s> I<spec>
+
+Print raw ANSI sequence given by I<spec> as an argument.
+
 =item B<-c> I<spec> I<string>
 
 Print I<string> in a color given by I<spec>.
-
-=item B<-s> I<spec>
-
-Echo raw ANSI sequence given by I<spec> as an argument.
 
 =item B<-f> I<format> I<args> ...
 
@@ -182,6 +186,17 @@ but second one is better.
     ansiecho -f -f '%%%ds' 16 hello
 
     ansiecho -f '%*s' 16 hello
+
+=item B<-S>
+
+If option C<-S> found, all following argument is considered as a color
+spec given to B<-s> option, until option B<-E> found.
+
+Next two commands are equivalent.
+
+    ansiecho -s ZE -s K/544 -s K/454 -s K/445
+
+    ansiecho -S ZE K/544 K/454 K/445
 
 =item B<-C> I<spec>
 
@@ -222,18 +237,7 @@ Next one does the same thing for all arguments.
 
     ansiecho -CRF -F'->%s' -CUD A B C
 
-=item B<-S>
-
-If option C<-S> found, all following argument is considered as a color
-spec given to B<-s> option, until option B<-E> found.
-
-Next two commands are equivalent.
-
-    ansiecho -s ZE -s K/544 -s K/454 -s K/445
-
-    ansiecho -S ZE K/544 K/454 K/445
-
-=item B<-E> I<spec>
+=item B<-E>
 
 Terminate B<-C>, B<-F> and B<-S> effects.
 

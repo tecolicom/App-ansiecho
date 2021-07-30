@@ -9,11 +9,17 @@ Version 0.02
 
 # SYNOPSIS
 
-ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
+ansiecho \[ options \] args ...
 
-ansiecho -f '\[ %12s \]' -c SR -f '%+06d' 123
+EXAMPLE:
 
-ansiecho -C '555/(132,0,41)' d i g i t a l
+    ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
+
+    ansiecho -f '[ %12s ]' -c SR -f '%+06d' 123
+
+    ansiecho -C '555/(132,0,41)' d i g i t a l
+
+    read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 # DESCRIPTION
 
@@ -95,27 +101,25 @@ and the next for the full-color terminal:
     ^[[38;2;255;20;147;48;2;255;255;224m
 
 Using **-S** option, you can set multiple ANSI sequences at once in a
-shell script.  Next **bash** code will initialize array variable
-`color` with the sequence for given color specs.
+shell script.  Next **bash** code will initialize multiple variables
+with the sequence for given color specs.
+
+    read ZE C1 C2 C3 < <( ansiecho -S ZE K/544 K/454 K/445 )
+
+Or you can set array variable.
 
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
 Then use this variable like:
 
+    echo "${C1} COLOR 1 ${ZE}"
+    echo "${C2} COLOR 2 ${ZE}"
+    echo "${C3} COLOR 3 ${ZE}"
+
     reset=${color[0]}
     echo "${color[1]} COLOR 1 ${reset}"
     echo "${color[2]} COLOR 2 ${reset}"
     echo "${color[3]} COLOR 3 ${reset}"
-
-Of course, you can do the same thing by calling **ansiecho** command
-directly.
-
-    ansiecho -c K/544 " COLOR 1 "
-    ansiecho -c K/454 " COLOR 2 "
-    ansiecho -c K/544 " COLOR 3 "
-
-However, calling **ansiecho** many times is not a good idea when the
-script is time-conscious.
 
 # OPTIONS
 
@@ -137,13 +141,13 @@ script is time-conscious.
 Above options can be mixed up together, like `-nej`.  Following
 options have to appear individually.
 
+- **-s** _spec_
+
+    Print raw ANSI sequence given by _spec_ as an argument.
+
 - **-c** _spec_ _string_
 
     Print _string_ in a color given by _spec_.
-
-- **-s** _spec_
-
-    Echo raw ANSI sequence given by _spec_ as an argument.
 
 - **-f** _format_ _args_ ...
 
@@ -163,6 +167,17 @@ options have to appear individually.
         ansiecho -f -f '%%%ds' 16 hello
 
         ansiecho -f '%*s' 16 hello
+
+- **-S**
+
+    If option `-S` found, all following argument is considered as a color
+    spec given to **-s** option, until option **-E** found.
+
+    Next two commands are equivalent.
+
+        ansiecho -s ZE -s K/544 -s K/454 -s K/445
+
+        ansiecho -S ZE K/544 K/454 K/445
 
 - **-C** _spec_
 
@@ -203,18 +218,7 @@ options have to appear individually.
 
         ansiecho -CRF -F'->%s' -CUD A B C
 
-- **-S**
-
-    If option `-S` found, all following argument is considered as a color
-    spec given to **-s** option, until option **-E** found.
-
-    Next two commands are equivalent.
-
-        ansiecho -s ZE -s K/544 -s K/454 -s K/445
-
-        ansiecho -S ZE K/544 K/454 K/445
-
-- **-E** _spec_
+- **-E**
 
     Terminate **-C**, **-F** and **-S** effects.
 

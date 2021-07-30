@@ -20,6 +20,7 @@ use Pod::Usage;
 use Moo;
 
 has debug      => ( is => 'ro' );
+has help       => ( is => 'ro' );
 has verbose    => ( is => 'ro', default => 1 );
 has no_newline => ( is => 'ro' );
 has join       => ( is => 'ro' );
@@ -47,6 +48,7 @@ sub run {
     Configure qw(bundling no_getopt_compat pass_through);
     GetOptions($app, make_options "
 	debug
+	help       | h
 	verbose    | v !
 	no_newline | n !
 	join       | j !
@@ -54,6 +56,7 @@ sub run {
 	rgb24          !
 	separate       =s
 	") || pod2usage();
+    $app->help and pod2usage();
     $app->initialize();
     $app->params(\@ARGV);
     print join($app->separate, $app->retrieve()), $app->terminate;
@@ -84,9 +87,15 @@ sub retrieve {
     my $append = sub {
 	push @out, join '', splice(@pending), @_;
     };
+
     while (@$in) {
 	my $arg = shift @$in;
 
+	# -S
+	if ($arg =~ /^-S$/) {
+	    unshift @style, [ \&ansi_code ];
+	    next;
+	}
 	# -c, -C
 	if ($arg =~ /^-([cC])(.+)?$/) {
 	    my $target = $1 eq 'c' ? \@effect : \@style;
@@ -105,11 +114,6 @@ sub retrieve {
 	    @style = ();
 	    next;
 	}
-	# -S
-	if ($arg =~ /^-S$/) {
-	    unshift @style, [ \&ansi_code ];
-	    next;
-	}
 
 	#
 	# -s, -i, -a : ANSI sequence
@@ -117,14 +121,14 @@ sub retrieve {
 	if ($arg =~ /^-([sia])(.+)?$/) {
 	    my $opt = $1;
 	    my $text = $2 // shift(@$in) // die "Not enough argument.\n";
-	    my $data = ansi_code($text);
+	    my $code = ansi_code($text);
 	    if ($opt eq 's') {
-		$arg = $data;
+		$arg = $code;
 	    } else {
 		if (@out == 0 or $opt eq 'i') {
-		    push @pending, $data;
+		    push @pending, $code;
 		} else {
-		    $out[-1] .= $data;
+		    $out[-1] .= $code;
 		}
 		next;
 	    }
