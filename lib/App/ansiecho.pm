@@ -17,21 +17,26 @@ use Data::Dumper;
 use open IO => 'utf8', ':std';
 use Pod::Usage;
 
-use Moo;
+use Getopt::EX::Hashed;
 
-has debug      => ( is => 'ro' );
-has help       => ( is => 'ro' );
-has verbose    => ( is => 'ro', default => 1 );
-has no_newline => ( is => 'ro' );
-has join       => ( is => 'ro' );
-has escape     => ( is => 'ro', default => 1 );
-has rgb24      => ( is => 'ro' );
-has separate   => ( is => 'rw', default => " " );
+has debug      => spec => "   " , ;
+has no_newline => spec => "! n" , ;
+has join       => spec => "! j" , ;
+has escape     => spec => "! e" , default => 1;
+has rgb24      => spec => "!  " , ;
+has separate   => spec => "=s " , default => " ";
+has help       => spec => "h  " , action  => sub {
+    pod2usage;
+};
+has version    => spec => "v  " , action  => sub {
+    say "Version: $VERSION";
+    exit;
+};
 
-has terminate  => ( is => 'rw', default => "\n" );
-has params     => ( is => 'rw' );
+has terminate  => default => "\n";
+has params     => default => [];
 
-no Moo;
+no Getopt::EX::Hashed;
 
 use App::ansiecho::Util;
 use Getopt::EX v1.23.2;
@@ -46,31 +51,21 @@ sub run {
     use Getopt::EX::Long qw(GetOptions Configure ExConfigure);
     ExConfigure BASECLASS => [ __PACKAGE__, "Getopt::EX" ];
     Configure qw(bundling no_getopt_compat pass_through);
-    GetOptions($app, make_options "
-	debug
-	help       | h
-	verbose    | v !
-	no_newline | n !
-	join       | j !
-	escape     | e !
-	rgb24          !
-	separate       =s
-	") || pod2usage();
-    $app->help and pod2usage();
+    GetOptions($app, $app->optspec) || pod2usage();
     $app->initialize();
-    $app->params(\@ARGV);
-    print join($app->separate, $app->retrieve()), $app->terminate;
+    $app->{params} = \@ARGV;
+    print join($app->{separate}, $app->retrieve()), $app->{terminate};
 }
 
 sub initialize {
     my $app = shift;
-    $app->terminate('') if $app->no_newline;
-    if ($app->separate) {
-	$app->separate(safe_backslash($app->separate));
+    $app->{terminate} = '' if $app->{no_newline};
+    if ($app->{separate}) {
+	$app->{separate} = safe_backslash($app->{separate});
     }
-    $app->separate('') if $app->join;
-    if (defined $app->rgb24) {
-	$Getopt::EX::Colormap::RGB24 = !!$app->rgb24;
+    $app->{separate} = '' if $app->{join};
+    if (defined $app->{rgb24}) {
+	$Getopt::EX::Colormap::RGB24 = !!$app->{rgb24};
     }
 }
 
@@ -79,7 +74,7 @@ use Getopt::EX::Colormap qw(colorize ansi_code);
 sub retrieve {
     my $app = shift;
     my $count = shift;
-    my $in = $app->params;
+    my $in = $app->{params};
     my @out;
     my @pending;
     my(@style, @effect);
@@ -147,7 +142,7 @@ sub retrieve {
 	# normal string argument
 	#
 	else {
-	    if ($app->escape) {
+	    if ($app->{escape}) {
 		$arg = safe_backslash($arg);
 	    }
 	}
