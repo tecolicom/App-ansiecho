@@ -11,7 +11,25 @@ Version 0.02
 
 ansiecho \[ options \] args ...
 
-EXAMPLE:
+Command Options:
+
+    -n                 Do not print the trailing newline
+    -j --join          Do not print space between arguments
+    -e --escape        Enable backslash escape notation
+       --rgb24         Produce 24bit color sequence
+       --separate=s    Set argument separator
+    -h --help          Print this message
+    -v --version       Print version
+
+Prefix Options:
+
+    -s/-S SPEC         Produce ANSI sequence
+    -c/-C SPEC ARG     Colorize next argument
+    -f/-F FORMAT ARGS  Format arguments
+    -E                 Terminate -C -S -F effect
+    -i/-a SPEC         Insert/Append ANSI sequence
+
+Example:
 
     ansiecho -c R Red -c M/551 Magenta/Yellow -c FSDB BlinkReverseBoldBlue
 
@@ -121,7 +139,7 @@ Then use this variable like:
     echo "${color[2]} COLOR 2 ${reset}"
     echo "${color[3]} COLOR 3 ${reset}"
 
-# OPTIONS
+# COMMAND OPTIONS
 
 - **-n**
 
@@ -138,12 +156,29 @@ Then use this variable like:
     Do not print space between arguments.  This is a short-cut for
     `--separate ''`.
 
-Above options can be mixed up together, like `-nej`.  Following
-options have to appear individually.
+- **--separate** _string_
+
+    Set separator string between each arguments.  Option **-j** is a
+    short-cut for **--separate ''**.
+
+- **--**\[**no**\]**rgb24**
+
+    Produce 24bit full-color sequence for 12bit/24bit specified colors.
+    They are converted to 216 colors by default.
+
+- **-h**, **--help**
+
+    Print help.
+
+- **-v**, **--version**
+
+    Print version.
+
+# PREFIX OPTIONS
 
 - **-s** _spec_
 
-    Print raw ANSI sequence given by _spec_ as an argument.
+    Print raw ANSI sequence for given _spec_.
 
 - **-c** _spec_ _string_
 
@@ -168,7 +203,7 @@ options have to appear individually.
 
         ansiecho -f '%*s' 16 hello
 
-- **-S**
+- **-S** _spec_
 
     If option `-S` found, all following argument is considered as a color
     spec given to **-s** option, until option **-E** found.
@@ -241,16 +276,6 @@ options have to appear individually.
     them to accumulate the effects.
 
         ansiecho -i R R -i U RU -i I RUI -i S RUIS -i F RUISF -a Z
-
-- **--separate** _string_
-
-    Set separator string between each arguments.  Option **-j** is a
-    short-cut for **--separate ''**.
-
-- **--**\[**no**\]**rgb24**
-
-    Produce 24bit full-color sequence for 12bit/24bit specified colors.
-    They are converted to 216 colors by default.
 
 # STRING LITERAL
 

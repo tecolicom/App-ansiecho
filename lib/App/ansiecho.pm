@@ -19,16 +19,22 @@ use Pod::Usage;
 
 use Getopt::EX::Hashed;
 
-has debug      => spec => "   " , ;
-has no_newline => spec => "! n" , ;
-has join       => spec => "! j" , ;
-has escape     => spec => "! e" , default => 1;
-has rgb24      => spec => "!  " , ;
-has separate   => spec => "=s " , default => " ";
-has help       => spec => "h  " , action  => sub {
-    pod2usage;
+has debug      => spec => "      " ;
+has no_newline => spec => " n !  " ;
+has join       => spec => " j !  " ;
+has escape     => spec => " e !  " , default => 1;
+has rgb24      => spec => "   !  " ;
+has separate   => spec => "   =s " , default => " ";
+has help       => spec => " h    " ;
+has version    => spec => " v    " ;
+
+has '+help' => action => sub {
+    pod2usage
+	-verbose  => 99,
+	-sections => [ qw(SYNOPSIS VERSION) ];
 };
-has version    => spec => "v  " , action  => sub {
+
+has '+version' => action => sub {
     say "Version: $VERSION";
     exit;
 };
@@ -39,19 +45,19 @@ has params     => default => [];
 no Getopt::EX::Hashed;
 
 use App::ansiecho::Util;
-use Getopt::EX v1.23.2;
+use Getopt::EX v1.24.1;
 use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
 
 use List::Util qw(sum);
 
 sub run {
     my $app = shift;
-    local @ARGV = map { utf8::is_utf8($_) ? $_ : decode('utf8', $_) } @_;
+    local @ARGV = decode_argv @_;
 
     use Getopt::EX::Long qw(GetOptions Configure ExConfigure);
     ExConfigure BASECLASS => [ __PACKAGE__, "Getopt::EX" ];
     Configure qw(bundling no_getopt_compat pass_through);
-    GetOptions($app, $app->optspec) || pod2usage();
+    $app->getopt || pod2usage();
     $app->initialize();
     $app->{params} = \@ARGV;
     print join($app->{separate}, $app->retrieve()), $app->{terminate};
@@ -60,10 +66,10 @@ sub run {
 sub initialize {
     my $app = shift;
     $app->{terminate} = '' if $app->{no_newline};
+    $app->{separate} = '' if $app->{join};
     if ($app->{separate}) {
 	$app->{separate} = safe_backslash($app->{separate});
     }
-    $app->{separate} = '' if $app->{join};
     if (defined $app->{rgb24}) {
 	$Getopt::EX::Colormap::RGB24 = !!$app->{rgb24};
     }
