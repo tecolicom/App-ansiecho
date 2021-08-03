@@ -5,7 +5,7 @@ ansiecho - Colored echo command using ANSI terminal sequence
 
 # VERSION
 
-Version 0.02
+Version 0.03
 
 # SYNOPSIS
 
