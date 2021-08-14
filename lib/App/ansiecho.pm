@@ -17,32 +17,32 @@ use Data::Dumper;
 use open IO => 'utf8', ':std';
 use Pod::Usage;
 
-use Getopt::EX::Hashed;
+use Getopt::EX::Hashed; {
 
-has debug      => spec => "      " ;
-has no_newline => spec => " n !  " ;
-has join       => spec => " j !  " ;
-has escape     => spec => " e !  " , default => 1;
-has rgb24      => spec => "   !  " ;
-has separate   => spec => "   =s " , default => " ";
-has help       => spec => " h    " ;
-has version    => spec => " v    " ;
+    has debug      => spec => "      " ;
+    has no_newline => spec => " n !  " ;
+    has join       => spec => " j !  " ;
+    has escape     => spec => " e !  " , default => 1;
+    has rgb24      => spec => "   !  " ;
+    has separate   => spec => "   =s " , default => " ";
+    has help       => spec => " h    " ;
+    has version    => spec => " v    " ;
 
-has '+help' => action => sub {
-    pod2usage
-	-verbose  => 99,
-	-sections => [ qw(SYNOPSIS VERSION) ];
-};
+    has '+help' => action => sub {
+	pod2usage
+	    -verbose  => 99,
+	    -sections => [ qw(SYNOPSIS VERSION) ];
+    };
 
-has '+version' => action => sub {
-    say "Version: $VERSION";
-    exit;
-};
+    has '+version' => action => sub {
+	say "Version: $VERSION";
+	exit;
+    };
 
-has terminate  => default => "\n";
-has params     => default => [];
+    has terminate  => default => "\n";
+    has params     => default => [];
 
-no Getopt::EX::Hashed;
+} no Getopt::EX::Hashed;
 
 use App::ansiecho::Util;
 use Getopt::EX v1.24.1;
