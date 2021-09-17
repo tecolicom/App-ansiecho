@@ -22,7 +22,7 @@ Prefix Options:
     -s/-S SPEC         Produce ANSI sequence
     -c/-C SPEC ARG     Colorize next argument
     -f/-F FORMAT ARGS  Format arguments
-    -E                 Terminate -C -S -F effect
+       -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
 
 Example:
@@ -197,8 +197,8 @@ Then use this variable like:
     in the format string except `%%`.  Variable width and precision
     parameter `*` can be used like `%*s` or `%*.*s`.
 
-    Format string also can be made by **-f** option.  Next command works,
-    but second one is better.
+    Format string also can be made by **-f** option.  Next commands produce
+    same output, but second one looks better.
 
         ansiecho -f -f '%%%ds' 16 hello
 
@@ -206,8 +206,8 @@ Then use this variable like:
 
 - **-S** _spec_
 
-    If option `-S` found, all following argument is considered as a color
-    spec given to **-s** option, until option **-E** found.
+    If option `-S` found, all following arguments are considered as a
+    color spec given to **-s** option, until option **-E** is found.
 
     Next two commands are equivalent.
 

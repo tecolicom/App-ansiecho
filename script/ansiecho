@@ -35,7 +35,7 @@ Prefix Options:
     -s/-S SPEC         Produce ANSI sequence
     -c/-C SPEC ARG     Colorize next argument
     -f/-F FORMAT ARGS  Format arguments
-    -E                 Terminate -C -S -F effect
+       -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
 
 Example:
@@ -216,8 +216,8 @@ Number of arguments are calculated from the number of C<%> characters
 in the format string except C<%%>.  Variable width and precision
 parameter C<*> can be used like C<%*s> or C<%*.*s>.
 
-Format string also can be made by B<-f> option.  Next command works,
-but second one is better.
+Format string also can be made by B<-f> option.  Next commands produce
+same output, but second one looks better.
 
     ansiecho -f -f '%%%ds' 16 hello
 
@@ -225,8 +225,8 @@ but second one is better.
 
 =item B<-S> I<spec>
 
-If option C<-S> found, all following argument is considered as a color
-spec given to B<-s> option, until option B<-E> found.
+If option C<-S> found, all following arguments are considered as a
+color spec given to B<-s> option, until option B<-E> is found.
 
 Next two commands are equivalent.
 
