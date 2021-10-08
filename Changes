@@ -2,6 +2,10 @@ Revision history for Perl script App-ansiecho
 
 {{$NEXT}}
 
+0.05 2021-10-08T07:49:07Z
+
+    - Deprecate --newline option.
+
 0.04 2021-09-17T23:29:11Z
 
     - Use the latest interface of Getopt::EX::Hashed.
