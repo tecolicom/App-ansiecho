@@ -1,5 +1,5 @@
 requires 'Encode';
-requires 'Getopt::EX', 'v1.24.1';
+requires 'Getopt::EX', 'v1.26.0';
 requires 'Getopt::EX::Colormap';
 requires 'Getopt::EX::Long';
 requires 'Getopt::EX::Hashed', '0.9920';
