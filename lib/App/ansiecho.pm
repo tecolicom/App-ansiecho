@@ -28,6 +28,15 @@ use Getopt::EX::Hashed; {
     has help       => " h    " ;
     has version    => " v    " ;
 
+    has '+separate' => action => sub {
+	my($name, $arg) = map "$_", @_;
+	$_->{$name} = safe_backslash($arg);
+    };
+
+    has '+rgb24' => action => sub {
+	$Getopt::EX::Colormap::RGB24 = !!$_[1];
+    };
+
     has '+help' => action => sub {
 	pod2usage
 	    -verbose  => 99,
@@ -58,19 +67,9 @@ sub run {
     ExConfigure BASECLASS => [ __PACKAGE__, "Getopt::EX" ];
     Configure qw(bundling no_getopt_compat pass_through);
     $app->getopt || pod2usage();
-    $app->initialize();
+
     $app->params(\@ARGV);
     print join($app->separate, $app->retrieve()), $app->terminate;
-}
-
-sub initialize {
-    my $app = shift;
-    if ($app->separate) {
-	$app->separate(safe_backslash($app->separate));
-    }
-    if (defined $app->rgb24) {
-	$Getopt::EX::Colormap::RGB24 = !!$app->rgb24;
-    }
 }
 
 use Getopt::EX::Colormap qw(colorize ansi_code);
