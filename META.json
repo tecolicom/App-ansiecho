@@ -45,7 +45,7 @@
             "Encode" : "0",
             "Getopt::EX" : "v1.26.0",
             "Getopt::EX::Colormap" : "0",
-            "Getopt::EX::Hashed" : "0.9920",
+            "Getopt::EX::Hashed" : "1.01",
             "Getopt::EX::Long" : "0",
             "List::Util" : "0",
             "Pod::Usage" : "0",

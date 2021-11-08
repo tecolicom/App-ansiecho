@@ -71,8 +71,8 @@ sub options {
     use Getopt::EX::Long qw(GetOptionsFromArray Configure ExConfigure);
     ExConfigure BASECLASS => [ __PACKAGE__, "Getopt::EX" ];
     Configure qw(bundling no_getopt_compat pass_through);
-    GetOptionsFromArray(\@argv, $app->optspec) || pod2usage();
-    push @{$app->params}, @argv;
+    $app->getopt(\@argv) || pod2usage();
+    $app->params(\@argv);
     $app;
 }
 
