@@ -61,15 +61,19 @@ use List::Util qw(sum);
 
 sub run {
     my $app = shift;
-    @ARGV = decode_argv @ARGV;
+    $app->options(@_);
+    print join($app->separate, $app->retrieve), $app->terminate;
+}
 
-    use Getopt::EX::Long qw(GetOptions Configure ExConfigure);
+sub options {
+    my $app = shift;
+    my @argv = decode_argv @_;
+    use Getopt::EX::Long qw(GetOptionsFromArray Configure ExConfigure);
     ExConfigure BASECLASS => [ __PACKAGE__, "Getopt::EX" ];
     Configure qw(bundling no_getopt_compat pass_through);
-    $app->getopt || pod2usage();
-
-    $app->params(\@ARGV);
-    print join($app->separate, $app->retrieve()), $app->terminate;
+    GetOptionsFromArray(\@argv, $app->optspec) || pod2usage();
+    push @{$app->params}, @argv;
+    $app;
 }
 
 use Getopt::EX::Colormap qw(colorize ansi_code);
