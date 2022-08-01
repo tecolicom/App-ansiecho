@@ -159,8 +159,8 @@ Then use this variable like:
 
 - **--separate** _string_
 
-    Set separator string between each arguments.  Option **-j** is a
-    short-cut for **--separate ''**.
+    Set separator string between arguments.  Option **-j** is a short-cut
+    for **--separate ''**.
 
 - **--**\[**no-**\]**rgb24**
 
@@ -302,7 +302,7 @@ always correspond to the character itself.
 
 # COLOR SPEC
 
-This is a brief summary.  Read ["COLOR SPEC" in Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap#COLOR-SPEC) for
+This is a brief summary.  Read ["COLOR SPEC" in Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap#COLOR-SPEC) for
 complete description.  Try next command to see 256 color table.
 
     perl -MGetopt::EX::Colormap=:all -E colortable
@@ -392,15 +392,15 @@ From GIT repository:
 
 ["Quote and Quote-like Operators" in perlop](https://metacpan.org/pod/perlop#Quote-and-Quote-like-Operators)
 
-[Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap)
+[Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap)
 
 [https://en.wikipedia.org/wiki/ANSI\_escape\_code](https://en.wikipedia.org/wiki/ANSI_escape_code)
 
-[Graphics::ColorNames::X](https://metacpan.org/pod/Graphics::ColorNames::X)
+[Graphics::ColorNames::X](https://metacpan.org/pod/Graphics%3A%3AColorNames%3A%3AX)
 
 [https://en.wikipedia.org/wiki/X11\_color\_names](https://en.wikipedia.org/wiki/X11_color_names)
 
-[App::ansifold](https://metacpan.org/pod/App::ansifold), [App::ansicolumn](https://metacpan.org/pod/App::ansicolumn)
+[App::ansifold](https://metacpan.org/pod/App%3A%3Aansifold), [App::ansicolumn](https://metacpan.org/pod/App%3A%3Aansicolumn)
 
 # AUTHOR
 
