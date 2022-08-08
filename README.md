@@ -44,7 +44,7 @@ Version 0.07
 ## ECHO
 
 **ansiecho** print arguments with ANSI terminal escape sequence
-according to a given color specification.
+according to a given color and format specification.
 
 In a simple case, **ansiecho** behave exactly same as [echo](https://metacpan.org/pod/echo) command.
 
@@ -67,11 +67,11 @@ See ["STRING LITERAL"](#string-literal) section for detail.
 
 You can specify color of each argument by preceding with **-c** option:
 
-    ansiecho -c R a -c GI b -c BD c
+    ansiecho -c R foo -c GI bar -c BD baz
 
-This command print strings `a`, `b` and `c` according to the color
-spec of `R` (Red), `GI` (_Green Italic_) and `BD` (**Blue Bold**)
-respectively.
+This command print strings `foo`, `bar` and `baz` according to the
+color spec of `R` (Red), `GI` (_Green Italic_) and `BD` (**Blue
+Bold**) respectively.
 
 Foreground and background color is specified in the form of
 `fore/back`.
@@ -96,7 +96,7 @@ including multibyte Unicode characters.
 
 Formatted result ends up to a single argument, and can be a subject of
 other operation.  In the next example, numbers are formatted, colored,
-and given to other format.
+and given to another format.
 
     ansiecho -f '\N{ALARM CLOCK} %s' -c KF/544 -f ' %02d:%02d:%02d ' 1 2 3
 
