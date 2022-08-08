@@ -1,5 +1,5 @@
 {
-   "abstract" : "Command to produce ANSI terminal code",
+   "abstract" : "Colored echo command using ANSI terminal sequence",
    "author" : [
       "Kazumasa Utashiro"
    ],

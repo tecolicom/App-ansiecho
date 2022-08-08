@@ -1,7 +1,8 @@
 name = "App-ansiecho"
 readme_from = "script/ansiecho"
+authors_from = "script/ansiecho"
 script_files = [ "script/ansiecho" ]
-badges = ['github-actions/test', 'metacpan']
+badges = [ 'github-actions/test', 'metacpan' ]
 authority = "cpan:UTASHIRO"
 
 module_maker = "ModuleBuildTiny"
