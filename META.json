@@ -4,7 +4,7 @@
       "Kazumasa Utashiro"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.12, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.19, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -43,10 +43,8 @@
       "runtime" : {
          "requires" : {
             "Encode" : "0",
-            "Getopt::EX" : "v1.26.0",
-            "Getopt::EX::Colormap" : "0",
-            "Getopt::EX::Hashed" : "1.01",
-            "Getopt::EX::Long" : "0",
+            "Getopt::EX" : "v1.28.0",
+            "Getopt::EX::Hashed" : "1.03",
             "List::Util" : "0",
             "Pod::Usage" : "0",
             "Text::ANSI::Printf" : "2.01",
@@ -68,7 +66,7 @@
       "homepage" : "https://github.com/kaz-utashiro/App-ansiecho",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/kaz-utashiro/App-ansiecho.git",
+         "url" : "https://github.com/kaz-utashiro/App-ansiecho.git",
          "web" : "https://github.com/kaz-utashiro/App-ansiecho"
       }
    },
