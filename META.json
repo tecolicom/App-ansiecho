@@ -47,6 +47,7 @@
             "Getopt::EX::Hashed" : "1.03",
             "List::Util" : "0",
             "Pod::Usage" : "0",
+            "Term::ANSIColor::Concise" : "== 2.00_03",
             "Text::ANSI::Printf" : "2.01",
             "perl" : "v5.14.0"
          }

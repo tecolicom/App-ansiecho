@@ -34,7 +34,7 @@ use Getopt::EX::Hashed; {
     };
 
     has '+rgb24' => action => sub {
-	$Getopt::EX::Colormap::RGB24 = !!$_[1];
+	$Term::ANSIColor::Concise::RGB24 = !!$_[1];
     };
 
     has '+help' => action => sub {
@@ -76,7 +76,7 @@ sub options {
     $app;
 }
 
-use Getopt::EX::Colormap qw(colorize ansi_code);
+use Term::ANSIColor::Concise qw(ansi_color ansi_code);
 
 sub retrieve {
     my $app = shift;
@@ -102,7 +102,7 @@ sub retrieve {
 	if ($arg =~ /^-([cC])(.+)?$/) {
 	    my $target = $1 eq 'c' ? \@effect : \@style;
 	    my($color) = defined $2 ? safe_backslash($2) : $app->retrieve(1);
-	    unshift @$target, [ \&colorize, $color ];
+	    unshift @$target, [ \&ansi_color, $color ];
 	    next;
 	}
 	# -F
