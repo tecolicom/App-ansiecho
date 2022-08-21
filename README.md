@@ -35,6 +35,10 @@ Example:
 
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
 
+<div>
+    <p><img width="750" src="https://raw.githubusercontent.com/kaz-utashiro/App-ansiecho/main/images/synopsis.png">
+</div>
+
 # VERSION
 
 Version 1.01\_01
