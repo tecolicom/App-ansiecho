@@ -18,7 +18,7 @@ use open IO => 'utf8', ':std';
 use Pod::Usage;
 
 use Getopt::EX::Hashed; {
-    Getopt::EX::Hashed->configure(DEFAULT => [ is => 'lv' ]);
+    Getopt::EX::Hashed->configure(DEFAULT => [ is => 'rw' ]);
     has debug      => "      " ;
     has n          => "      " , action => sub { $_->terminate = '' };
     has join       => " j    " , action => sub { $_->separate = '' };

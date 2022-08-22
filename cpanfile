@@ -1,7 +1,7 @@
 requires 'Encode';
-requires 'Term::ANSIColor::Concise', '== 2.00_03';
+requires 'Term::ANSIColor::Concise', '== 2.00_04';
 requires 'Getopt::EX', 'v1.28.0';
-requires 'Getopt::EX::Hashed', '1.04';
+requires 'Getopt::EX::Hashed', '1.05';
 requires 'List::Util';
 requires 'Pod::Usage';
 requires 'Text::ANSI::Printf', '2.01';

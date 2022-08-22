@@ -408,9 +408,7 @@ C<GETOPTEX_RGB24> environment variable to produce full-color sequence.
 
 From CPAN archive:
 
-    $ cpanm App::ansiecho
-    or
-    $ curl -sL http://cpanmin.us | perl - App::ansiecho
+    cpanm App::ansiecho
 
 From GIT repository:
 

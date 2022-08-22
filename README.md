@@ -384,9 +384,7 @@ is automatically enabled.  Otherwise, use **--rgb24** option or set
 
 From CPAN archive:
 
-    $ cpanm App::ansiecho
-    or
-    $ curl -sL http://cpanmin.us | perl - App::ansiecho
+    cpanm App::ansiecho
 
 From GIT repository:
 
