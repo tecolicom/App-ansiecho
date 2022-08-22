@@ -18,32 +18,32 @@ use open IO => 'utf8', ':std';
 use Pod::Usage;
 
 use Getopt::EX::Hashed; {
-    Getopt::EX::Hashed->configure(DEFAULT => [ is => 'rw' ]);
+    Getopt::EX::Hashed->configure(DEFAULT => [ is => 'lv' ]);
     has debug      => "      " ;
-    has n          => "      " , action => sub { $_->{terminate} = '' };
-    has join       => " j    " , action => sub { $_->{separate} = '' };
+    has n          => "      " , action => sub { $_->terminate = '' };
+    has join       => " j    " , action => sub { $_->separate = '' };
     has escape     => " e !  " , default => 1;
     has rgb24      => "   !  " ;
     has separate   => "   =s " , default => " ";
     has help       => " h    " ;
     has version    => " v    " ;
 
-    has '+separate' => action => sub {
+    has '+separate' => sub {
 	my($name, $arg) = map "$_", @_;
-	$_->{$name} = safe_backslash($arg);
+	$_->$name = safe_backslash($arg);
     };
 
-    has '+rgb24' => action => sub {
+    has '+rgb24' => sub {
 	$Term::ANSIColor::Concise::RGB24 = !!$_[1];
     };
 
-    has '+help' => action => sub {
+    has '+help' => sub {
 	pod2usage
 	    -verbose  => 99,
 	    -sections => [ qw(SYNOPSIS VERSION) ];
     };
 
-    has '+version' => action => sub {
+    has '+version' => sub {
 	say "Version: $VERSION";
 	exit;
     };

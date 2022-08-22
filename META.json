@@ -44,7 +44,7 @@
          "requires" : {
             "Encode" : "0",
             "Getopt::EX" : "v1.28.0",
-            "Getopt::EX::Hashed" : "1.03",
+            "Getopt::EX::Hashed" : "1.04",
             "List::Util" : "0",
             "Pod::Usage" : "0",
             "Term::ANSIColor::Concise" : "== 2.00_03",
