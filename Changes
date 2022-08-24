@@ -2,6 +2,10 @@ Revision history for Perl script App-ansiecho
 
 {{$NEXT}}
 
+1.02 2022-08-24T08:47:24Z
+
+    - Release 1.02
+
 1.01_03 2022-08-22T10:03:57Z
 
     - require Getopt::EX::Hashed@1.05
