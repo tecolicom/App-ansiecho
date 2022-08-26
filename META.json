@@ -43,7 +43,7 @@
       "runtime" : {
          "requires" : {
             "Encode" : "0",
-            "Getopt::EX" : "v1.28.0",
+            "Getopt::EX" : "v2.1.1",
             "Getopt::EX::Hashed" : "1.05",
             "List::Util" : "0",
             "Pod::Usage" : "0",
