@@ -169,8 +169,7 @@ Then use this variable like:
 
 - **--separate** _string_
 
-    Set separator string between arguments.  Option **-j** is a short-cut
-    for **--separate ''**.
+    Set separator string between arguments.
 
 - **--**\[**no-**\]**rgb24**
 

@@ -186,8 +186,7 @@ C<--separate ''>.
 
 =item B<--separate> I<string>
 
-Set separator string between arguments.  Option B<-j> is a short-cut
-for B<--separate ''>.
+Set separator string between arguments.
 
 =item B<-->[B<no->]B<rgb24>
 
