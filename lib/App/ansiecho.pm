@@ -82,12 +82,13 @@ sub retrieve {
     my $app = shift;
     my $count = shift;
     my $in = $app->params;
-    my @out;
-    my @pending;
     my(@style, @effect);
 
-    my $append = sub {
-	push @out, join '', splice(@pending), @_;
+    my @out;
+    my @pending;
+    my $charge = sub { push @pending, @_ };
+    my $discharge = sub {
+	push @out, join '', splice(@pending), @_ if @pending or @_;
     };
 
     while (@$in) {
@@ -128,7 +129,7 @@ sub retrieve {
 		$arg = $code;
 	    } else {
 		if (@out == 0 or $opt eq 'i') {
-		    push @pending, $code;
+		    $charge->($code);
 		} else {
 		    $out[-1] .= $code;
 		}
@@ -162,7 +163,7 @@ sub retrieve {
 	    $arg = $func->(@opts, $arg);
 	}
 
-	$append->($arg);
+	$discharge->($arg);
 
 	if ($count) {
 	    my $out = @out + !!@pending;
@@ -170,7 +171,7 @@ sub retrieve {
 	    last if $out == $count;
 	}
     }
-    @pending and $append->();
+    $discharge->();
     die "Not enough argument.\n" if $count and @out < $count;
     return @out;
 }
