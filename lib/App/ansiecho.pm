@@ -141,9 +141,14 @@ sub retrieve {
 	#
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
+	    state $param_re = do {
+		my $N = qr/\d\$/;
+		my $P = qr/\d+|\*$N?/;
+		qr/%% | % $N? [-+#0]*+ (?: $P(?:\.$P)? | \.$P )? [a-zA-Z] /x
+	    };
 	    my $n = sum map {
-		{ '%' => 0, '*' => 2, '*.*' => 3 }->{$_} // 1
-	    } $format =~ /(?| %(%) | %[-+ #0]*+(\*(?:\.\*)?|.) )/xg;
+		$_ eq '%%' ? 0 : (tr/*/*/ + 1);
+	    } $format =~ /$param_re/g;
 	    $arg = ansi_sprintf($format, $app->retrieve($n));
 	}
 	#
