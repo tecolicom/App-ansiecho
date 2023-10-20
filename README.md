@@ -113,6 +113,32 @@ and given to another format.
 Formatting is done by Perl `sprintf` function.  See
 ["sprintf" in perlfunc](https://metacpan.org/pod/perlfunc#sprintf) for detail.
 
+## REORDERED ARGUMENTS
+
+Position specifiers may also be used in the format string.
+
+    ansiecho -f '%2$d %1$d' 12 34
+    ansiecho -f '%2$d %d' 12 34
+
+Both of the above commands produce output like this
+
+    34 12
+
+However,
+
+    ansiecho -f '%2$d %d %d' 12 34
+
+does not print `34 12 34` and results in an error. **ansiecho**
+assumes that this format consumes three arguments.
+
+Do not be surprised if the following command prints `"12 12"`, and do
+not expect it to print `12 12 34`.
+
+    ansiecho -f '%1$d %d' 12 34
+
+If you are using perl v5.24 or later, you can also use reordered 
+precision arguments.
+
 ## ANSI SEQUENCE
 
 To get desired ANSI sequence, use **-s** option.  Next example produce

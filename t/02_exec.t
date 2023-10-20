@@ -112,6 +112,14 @@ test('-f', '%2$d %d %d', '12', '34',       "34 12 34\n");
 }
 test('-f', '%3$d %d %d', '12', '34', '56', "56 12 34\n");
 
+sub RED   { R('RED') };
+sub GREEN { G('GREEN') };
+sub BLUE  { B('BLUE') };
+test(qw(-f %2$s-%1$s -cR RED -cG GREEN),
+     sprintf("%s-%s\n", G('GREEN'), RED));
+test(qw(-f %3$s-%2$s-%1$s -cR RED -cG GREEN -cB BLUE),
+     sprintf("%s-%s-%s\n", BLUE, GREEN, RED));
+
 # reordered precision arguments
 SKIP: {
     skip "reordered precision arguments was supported by v5.24", 7

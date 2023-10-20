@@ -57,7 +57,7 @@ use App::ansiecho::Util;
 use Getopt::EX v1.24.1;
 use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
 
-use List::Util qw(sum);
+use List::Util qw(sum max);
 
 sub run {
     my $app = shift;
