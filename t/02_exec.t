@@ -117,6 +117,11 @@ test(qw(-f %2$s-%1$s -cR RED -cG GREEN),
      sprintf("%s-%s\n", G('GREEN'), RED));
 test(qw(-f %3$s-%2$s-%1$s -cR RED -cG GREEN -cB BLUE),
      sprintf("%s-%s-%s\n", BLUE, GREEN, RED));
+TODO: {
+local $TODO = "ansi_fold removes trailing Erase Line code.";
+test(qw(-f %3$.1s-%2$.1s-%1$.1s -cR RED -cG GREEN -cB BLUE),
+     sprintf("%s-%s-%s\n", B('B'), G('G'), R('R')));
+}
 
 # reordered precision arguments
 SKIP: {

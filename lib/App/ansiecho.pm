@@ -142,16 +142,16 @@ sub retrieve {
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
 	    state $param_re = do {
-		my $N = qr/\d+\$/;
-		my $P = qr/\d+|\*$N?/;
+		my $P = qr/\d+\$/;
+		my $W = qr/\d+|\*$P?/;
 		qr{ %% |
-		    (?<A> % $N?) [-+#0]*+
-		    (?: (?<B>$P) (?:\.(?<C>$P))? | \.(?<D>$P) )? [a-zA-Z]
+		    (?<A> % $P?) [-+#0]*+
+		    (?: (?<B>$W) (?:\.(?<C>$W))? | \.(?<D>$W) )? [a-zA-Z]
 		}x;
 	    };
 	    my($pos, $n) = (0, 0);
 	    while ($format =~ /$param_re/g) {
-		next if not defined $+{A};
+		$+{A} // next;
 		for ($+{A}, grep { defined and /\*/ } @+{qw(B C D)}) {
 		    if (/(\d+)\$/) {
 			$pos = max($pos, $1);
