@@ -142,7 +142,7 @@ sub retrieve {
 	elsif ($arg =~ /^-f(.+)?$/) {
 	    my($format) = defined $1 ? safe_backslash($1) : $app->retrieve(1);
 	    state $param_re = do {
-		my $N = qr/\d\$/;
+		my $N = qr/\d+\$/;
 		my $P = qr/\d+|\*$N?/;
 		qr/%% | % $N? [-+#0]*+ (?: $P(?:\.$P)? | \.$P )? [a-zA-Z] /x
 	    };
