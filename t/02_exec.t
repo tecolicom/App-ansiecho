@@ -111,16 +111,22 @@ TODO:{local $TODO = "should not use like this";
 test('-f', '%2$d %d %d', '12', '34',       "34 12 34\n");
 }
 test('-f', '%3$d %d %d', '12', '34', '56', "56 12 34\n");
-test('-f', '%2$*3$d %d', '12', '34', '3',  " 34 12\n") ;
-TODO:{local $TODO = "should not use like this";
-test('-f', '%*1$.*f', '4', '5', '10',  "5.0000 10\n") ;
-}
 
-test(qw(-f %.*f        3 1.2345  ), "1.234\n");
-test(qw(-f %*3$.*f     3 1.2345 6), " 1.234\n");
-test(qw(-f %*2$.*3$f   1.2345 6 3), " 1.234\n");
-test(qw(-f %*3$.*2$f   1.2345 3 6), " 1.234\n");
-test(qw(-f %1$*3$.*2$f 1.2345 3 6), " 1.234\n");
+# reordered precision arguments
+SKIP: {
+    skip "reordered precision arguments was supported by v5.24", 7
+	if $] < 5.024;
+    test('-f', '%2$*3$d %d', '12', '34', '3',  " 34 12\n") ;
+    TODO: {
+	local $TODO = "should not use like this";
+	test('-f', '%*1$.*f', '4', '5', '10',  "5.0000 10\n") ;
+    }
+    test(qw(-f %.*f        3 1.2345  ), "1.234\n");
+    test(qw(-f %*3$.*f     3 1.2345 6), " 1.234\n");
+    test(qw(-f %*2$.*3$f   1.2345 6 3), " 1.234\n");
+    test(qw(-f %*3$.*2$f   1.2345 3 6), " 1.234\n");
+    test(qw(-f %1$*3$.*2$f 1.2345 3 6), " 1.234\n");
+}
 
 # width parameter: *
 test(qw(-f %*s 5 abc),         "  abc\n");
