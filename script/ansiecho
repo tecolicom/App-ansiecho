@@ -131,25 +131,16 @@ L<perlfunc/sprintf> for detail.
 =head2 REORDERED ARGUMENTS
 
 Position specifiers may also be used in the format string.
+Next command produces C<34 12>.
 
     ansiecho -f '%2$d %1$d' 12 34
-    ansiecho -f '%2$d %d' 12 34
 
-Both of the above commands produce output like this
-
-    34 12
-
-However,
+Oddly enough
 
     ansiecho -f '%2$d %d %d' 12 34
 
-does not print C<34 12 34> and results in an error. B<ansiecho>
-assumes that this format consumes three arguments.
-
-Do not be surprised if the following command prints C<"12 12">, and do
-not expect it to print C<12 12 34>.
-
-    ansiecho -f '%1$d %d' 12 34
+prints C<34 12 34>, but don't be surprised.  When using position
+specifiers, it is safe to use them for all arguments.
 
 If you are using perl v5.24 or later, you can also use reordered 
 precision arguments.

@@ -144,11 +144,23 @@ sub retrieve {
 	    state $param_re = do {
 		my $N = qr/\d+\$/;
 		my $P = qr/\d+|\*$N?/;
-		qr/%% | % $N? [-+#0]*+ (?: $P(?:\.$P)? | \.$P )? [a-zA-Z] /x
+		qr{ %% |
+		    (?<A> % $N?) [-+#0]*+
+		    (?: (?<B>$P) (?:\.(?<C>$P))? | \.(?<D>$P) )? [a-zA-Z]
+		}x;
 	    };
-	    my $n = sum map {
-		$_ eq '%%' ? 0 : (tr/*/*/ + 1);
-	    } $format =~ /$param_re/g;
+	    my($pos, $n) = (0, 0);
+	    while ($format =~ /$param_re/g) {
+		next if not defined $+{A};
+		for ($+{A}, grep { defined and /\*/ } @+{qw(B C D)}) {
+		    if (/(\d+)\$/) {
+			$pos = max($pos, $1);
+		    } else {
+			$n++;
+		    }
+		}
+	    }
+	    $n = max($pos, $n);
 	    $arg = ansi_sprintf($format, $app->retrieve($n));
 	}
 	#

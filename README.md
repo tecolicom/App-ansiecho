@@ -116,25 +116,16 @@ Formatting is done by Perl `sprintf` function.  See
 ## REORDERED ARGUMENTS
 
 Position specifiers may also be used in the format string.
+Next command produces `34 12`.
 
     ansiecho -f '%2$d %1$d' 12 34
-    ansiecho -f '%2$d %d' 12 34
 
-Both of the above commands produce output like this
-
-    34 12
-
-However,
+Oddly enough
 
     ansiecho -f '%2$d %d %d' 12 34
 
-does not print `34 12 34` and results in an error. **ansiecho**
-assumes that this format consumes three arguments.
-
-Do not be surprised if the following command prints `"12 12"`, and do
-not expect it to print `12 12 34`.
-
-    ansiecho -f '%1$d %d' 12 34
+prints `34 12 34`, but don't be surprised.  When using position
+specifiers, it is safe to use them for all arguments.
 
 If you are using perl v5.24 or later, you can also use reordered 
 precision arguments.
