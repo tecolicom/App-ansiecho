@@ -48,7 +48,7 @@
             "List::Util" : "0",
             "Pod::Usage" : "0",
             "Term::ANSIColor::Concise" : "2.01",
-            "Text::ANSI::Printf" : "2.02",
+            "Text::ANSI::Printf" : "2.03",
             "perl" : "v5.14.0"
          }
       },

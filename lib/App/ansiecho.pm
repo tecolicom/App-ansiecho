@@ -56,6 +56,7 @@ use Getopt::EX::Hashed; {
 use App::ansiecho::Util;
 use Getopt::EX v1.24.1;
 use Text::ANSI::Printf 2.01 qw(ansi_sprintf);
+$Text::ANSI::Printf::REORDER = 1;
 
 use List::Util qw(sum max);
 
