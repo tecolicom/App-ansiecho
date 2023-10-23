@@ -1,5 +1,5 @@
 requires 'Encode';
-requires 'Term::ANSIColor::Concise', '2.01';
+requires 'Term::ANSIColor::Concise', '2.05';
 requires 'Getopt::EX', '2.1.1';
 requires 'Getopt::EX::Hashed', '1.05';
 requires 'List::Util';

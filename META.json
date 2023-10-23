@@ -47,7 +47,7 @@
             "Getopt::EX::Hashed" : "1.05",
             "List::Util" : "0",
             "Pod::Usage" : "0",
-            "Term::ANSIColor::Concise" : "2.01",
+            "Term::ANSIColor::Concise" : "2.05",
             "Text::ANSI::Printf" : "2.03",
             "perl" : "v5.14.0"
          }
@@ -71,7 +71,7 @@
          "web" : "https://github.com/tecolicom/App-ansiecho"
       }
    },
-   "version" : "1.05",
+   "version" : "1.06",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <kaz@utashiro.com>"
