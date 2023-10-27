@@ -43,7 +43,7 @@
       "runtime" : {
          "requires" : {
             "Encode" : "0",
-            "Getopt::EX" : "v2.1.1",
+            "Getopt::EX" : "v2.1.4",
             "Getopt::EX::Hashed" : "1.05",
             "List::Util" : "0",
             "Pod::Usage" : "0",
@@ -71,7 +71,7 @@
          "web" : "https://github.com/tecolicom/App-ansiecho"
       }
    },
-   "version" : "1.06",
+   "version" : "1.07",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <kaz@utashiro.com>"

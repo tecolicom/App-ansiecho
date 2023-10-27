@@ -1,6 +1,6 @@
 requires 'Encode';
 requires 'Term::ANSIColor::Concise', '2.05';
-requires 'Getopt::EX', '2.1.1';
+requires 'Getopt::EX', '2.1.4';
 requires 'Getopt::EX::Hashed', '1.05';
 requires 'List::Util';
 requires 'Pod::Usage';
