@@ -4,7 +4,7 @@ requires 'Getopt::EX', '2.1.1';
 requires 'Getopt::EX::Hashed', '1.05';
 requires 'List::Util';
 requires 'Pod::Usage';
-requires 'Text::ANSI::Printf', '2.03';
+requires 'Text::ANSI::Printf', '2.05';
 requires 'perl', 'v5.14.0';
 
 on configure => sub {
