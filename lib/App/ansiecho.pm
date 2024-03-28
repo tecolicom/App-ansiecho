@@ -1,6 +1,6 @@
 package App::ansiecho;
 
-our $VERSION = "1.0702";
+our $VERSION = "1.08";
 
 use v5.14;
 use warnings;

@@ -2,6 +2,10 @@ Revision history for Perl script App-ansiecho
 
 {{$NEXT}}
 
+1.08 2024-03-28T09:56:23Z
+
+    - use charnames ':loose', which requires perl 5.16
+
 1.0702 2024-03-23T01:17:31Z
 
     - allow "-" in unicode name
