@@ -49,7 +49,7 @@
             "Pod::Usage" : "0",
             "Term::ANSIColor::Concise" : "2.05",
             "Text::ANSI::Printf" : "2.05",
-            "perl" : "v5.14.0"
+            "perl" : "v5.16.0"
          }
       },
       "test" : {
