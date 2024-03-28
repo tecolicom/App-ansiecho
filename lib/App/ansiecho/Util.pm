@@ -6,7 +6,7 @@ use Encode;
 use Exporter 'import';
 our @EXPORT_OK = qw(decode_argv unescape);
 
-use charnames ':full';
+use charnames ':loose';
 
 sub decode_argv {
     map {
