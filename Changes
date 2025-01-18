@@ -2,6 +2,10 @@ Revision history for Perl script App-ansiecho
 
 {{$NEXT}}
 
+1.09 2025-01-18T12:37:27Z
+
+    - fix bug of not printing "\x30" (0)
+
 1.08 2024-03-28T09:56:23Z
 
     - use charnames ':loose', which requires perl 5.16

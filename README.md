@@ -47,7 +47,7 @@ Example:
 
 # VERSION
 
-Version 1.08
+Version 1.09
 
 # DESCRIPTION
 
