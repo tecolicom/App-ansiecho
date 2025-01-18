@@ -32,6 +32,7 @@ test(qw(\\055c), "\055c\n");
 test(qw(\\o{55}c), "\o{55}c\n");
 test(qw(\\o{055}c), "\o{055}c\n");
 test(qw(\\x2dc), "\x2dc\n");
+test(qw(\\x30c), "\x30c\n");
 test(qw(\\N{U+002D}c), "\N{U+002D}c\n");
 
 SKIP: {

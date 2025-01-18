@@ -27,7 +27,7 @@ sub unescape {
 	| \\ \d{1,3}
 	| \\ .
         )
-    }{ eval qq["$1"] or die "$1 : string error.\n"}xiger;
+    }{ eval qq["$1"] // die "$1 : string error.\n"}xiger;
 }
 
 1;
