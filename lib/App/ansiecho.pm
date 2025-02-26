@@ -29,7 +29,7 @@ use Getopt::EX::Hashed; {
     has join       => " j    " , action => sub { $_->separate = '' };
     has escape     => " e !  " , default => 1;
     has rgb24      => "   !  " ;
-    has separate   => "   =s " , default => " ";
+    has separate   => " x =s " , default => " ";
     has help       => " h    " ;
     has version    => " v    " ;
 
@@ -77,6 +77,12 @@ sub options {
 
 use Term::ANSIColor::Concise qw(ansi_color ansi_code);
 
+sub uniname {
+    local $_ = @_ ? shift : $_;
+    my @names = map { /^[\da-f]{1,6}$/i ? "\\N{U+$_}" : "\\N{$_}" } /[-+_\w ]+/g;
+    unescape join '', @names;
+}
+
 sub retrieve {
     my $app = shift;
     my $count = shift;
@@ -109,6 +115,11 @@ sub retrieve {
 	if ($arg =~ /^-(F)(.+)?$/) {
 	    my($format) = defined $2 ? unescape($2) : $app->retrieve(1);
 	    unshift @style, [ \&ansi_sprintf, $format ];
+	    next;
+	}
+	# -U
+	if ($arg =~ /^-(U)$/) {
+	    unshift @style, [ \&uniname ];
 	    next;
 	}
 	# -E
@@ -163,6 +174,14 @@ sub retrieve {
 	    }
 	    $n = max($pos, $n);
 	    $arg = ansi_sprintf($format, $app->retrieve($n));
+	}
+	#
+	# -u : Unicode Name
+	#
+	if ($arg =~ /^-u(.+)?$/) {
+	    my $opt = $1;
+	    my $name = $2 // shift(@$in) // die "Not enough argument.\n";
+	    $arg = uniname($name);
 	}
 	#
 	# normal string argument

@@ -13,7 +13,7 @@ Command Options:
     -j --join          Do not print space between arguments
     -e --escape        Enable backslash escape notation
        --rgb24         Produce 24bit color sequence
-       --separate=s    Set argument separator
+    -x --separate=s    Set argument separator
     -h --help          Print this message
     -v --version       Print version
 
@@ -21,6 +21,7 @@ Prefix Options:
 
     -s/-S SPEC         Produce ANSI sequence(s)
     -c/-C SPEC ARG     Colorize next argument(s)
+    -u/-U NAME         Convert to named Unicode char(s)
     -f/-F FORMAT ARGS  Format arguments
        -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
@@ -41,6 +42,9 @@ Example:
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
                                 ┗sequence━━━━━━━━━━━━━┛
 
+    ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
+             ┗combine━━━┛ ┗unicode━━━━━━━━━━━━┛
+
 <div>
     <p><img width="750" src="https://raw.githubusercontent.com/kaz-utashiro/App-ansiecho/main/images/synopsis.png">
 </div>
@@ -60,12 +64,12 @@ In a simple case, **ansiecho** behave exactly same as [echo](https://metacpan.or
 
     ansiecho a b c
 
-Like [echo](https://metacpan.org/pod/echo) command, option **-n** disables to print newline at the
-end.  Option **-j** (or **--join**) removes white space between
+Like [echo](https://metacpan.org/pod/echo) command, option `-n` disables to print newline at the
+end.  Option `-j` (or `--join`) removes white space between
 arguments.
 
 Arguments can include backslash escaped characters, such as `\n` for
-a new line.  There is an bash-echo-compatible **-e** option, but it is
+a new line.  There is an bash-echo-compatible `-e` option, but it is
 enabled by default.  You can include control and named Unicode
 characters using this.
 
@@ -75,7 +79,7 @@ See ["STRING LITERAL"](#string-literal) section for detail.
 
 ## COLOR and EFFECT
 
-You can specify color of each argument by preceding with **-c** option:
+You can specify color of each argument by preceding with `-c` option:
 
     ansiecho -c R foo -c GI bar -c BD baz
 
@@ -95,13 +99,13 @@ such.  More information is described in ["COLOR SPEC"](#color-spec) section.
 
 ## FORMAT
 
-Format string can be specified by **-f** option, and it behaves like a
+Format string can be specified by `-f` option, and it behaves like a
 [printf(1)](http://man.he.net/man1/printf) command.
 
     ansiecho -f '[ %5s : %5s : %5s ]' -c R RED -c G GREEN -c B BLUE
 
 As in above example, colored text can be given as an argument for
-**-f** option, and the string width is calculated as you expect,
+`-f` option, and the string width is calculated as you expect,
 including multibyte Unicode characters.
 
 Formatted result ends up to a single argument, and can be a subject of
@@ -132,7 +136,7 @@ precision arguments.
 
 ## ANSI SEQUENCE
 
-To get desired ANSI sequence, use **-s** option.  Next example produce
+To get desired ANSI sequence, use `-s` option.  Next example produce
 ANSI terminal sequence to indicate `deeppink` color on `lightyellow`
 background.
 
@@ -146,7 +150,7 @@ and the next for the full-color terminal:
 
     ^[[38;2;255;20;147;48;2;255;255;224m
 
-Using **-S** option, you can set multiple ANSI sequences at once in a
+Using `-S` option, you can set multiple ANSI sequences at once in a
 shell script.  Next **bash** code will initialize multiple variables
 with the sequence for given color specs.
 
@@ -177,14 +181,14 @@ Then use this variable like:
 
     Enable interpretation of backslash escapes in the normal string
     argument.  This option is enabled by default, unlike bash built-in
-    [echo(1)](http://man.he.net/man1/echo) command.  Use **--no-escape** to disable it.
+    [echo(1)](http://man.he.net/man1/echo) command.  Use `--no-escape` to disable it.
 
 - **-j**, **--join**
 
     Do not print space between arguments.  This is a short-cut for
     `--separate ''`.
 
-- **--separate** _string_
+- **-x**, **--separate** _string_
 
     Set separator string between arguments.
 
@@ -211,19 +215,25 @@ Then use this variable like:
 
     Print _string_ in a color given by _spec_.
 
+- **-u** _NAME_
+
+    Print Unicode character described by _NAME_.  Specifically, `NAME`
+    is converted to `\N{NAME}`.  However, if the `NAME` looks like a
+    hexadecimal number, it is converted to `\N{U+NAME}`.
+
 - **-f** _format_ _args_ ...
 
     Print _args_ in a given _format_.  Backslash escape is always
     interpreted in the format string.
 
-    The result of **-f** sequence ends up to a single argument, and can be
-    a subject of other **-c** or **-f** option.
+    The result of `-f` sequence ends up to a single argument, and can be
+    a subject of other `-c` or `-f` option.
 
     Number of arguments are calculated from the number of `%` characters
     in the format string except `%%`.  Variable width and precision
     parameter `*` can be used like `%*s` or `%*.*s`.
 
-    Format string also can be made by **-f** option.  Next commands produce
+    Format string also can be made by `-f` option.  Next commands produce
     same output, but second one looks better.
 
         ansiecho -f -f '%%%ds' 16 hello
@@ -233,7 +243,7 @@ Then use this variable like:
 - **-S** _spec_
 
     If option `-S` found, all following arguments are considered as a
-    color spec given to **-s** option, until option **-E** is found.
+    color spec given to `-s` option, until option `-E` is found.
 
     Next two commands are equivalent.
 
@@ -243,8 +253,8 @@ Then use this variable like:
 
 - **-C** _spec_
 
-    Option **-C** set permanent color which is applied to all following
-    arguments until option **-E** found.
+    Option `-C` set permanent color which is applied to all following
+    arguments until option `-E` found.
 
     Next command prints only a word `Yellow` in yellow, but second one
     print `Yellow`, `Brick`, and `Road` in yellow.
@@ -260,15 +270,25 @@ Then use this variable like:
     Option `-C` can be used multiple times mixed with `-F` option.  See
     below.
 
+- **-U**
+
+    All subsequent arguments are interpreted as unicode names or code
+    points, until option `-E` is found.
+
+    Option `--separate` (`-x`) option can be used to combine emoji and
+    such by using the Unicode ZERO WIDTH JOINER (ZWJ) character.
+
+        ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
+
 - **-F** _format_
 
     As with the `-C` option, `-F` defines a format which is applied to
-    all arguments until option **-E** found.  Format string have to include
-    single `%s` placeholder.
+    all arguments until option `-E` is found.  Format string have to
+    include single `%s` placeholder.
 
         ansiecho Follow the -CYS -F ' %s ' Yellow Brick Road
 
-    Option **-C** and **-F** can be used repeatedly, and they will take
+    Option `-C` and `-F` can be used repeatedly, and they will take
     effect in the reverse order of their appearance.
 
     Next command show argument `A` in underline/bold with blinking red
@@ -283,13 +303,13 @@ Then use this variable like:
 
 - **-E**
 
-    Terminate **-C**, **-F** and **-S** effects.
+    Terminates `-S`, `-C`, `-U` and `-F` effects.
 
 - **-i** _spec_
 - **-a** _spec_
 
-    Add raw ANSI sequence given by _spec_.  Option **-i** insert the
-    sequence before the next argument, while **-a** append to the final
+    Add raw ANSI sequence given by _spec_.  Option `-i` insert the
+    sequence before the next argument, while `-a` append to the final
     argument.
 
     Next two commands are equivalent.
@@ -300,7 +320,7 @@ Then use this variable like:
 
     Color spec `ZE` produces RESET and ERASE LINE sequence.
 
-    Because **-i** and **-a** does not produce RESET sequence, you can use
+    Because `-i` and `-a` does not produce RESET sequence, you can use
     them to accumulate the effects.
 
         ansiecho -i R R -i U RU -i I RUI -i S RUIS -i F RUISF -a Z
@@ -398,7 +418,7 @@ Samples:
 12bit/24bit colors are converted to 216 colors because most terminal
 can not display them.  On some terminals which set the environment
 variable `COLORTERM` as `truecolor` (e.g. iTerm), 24bit color mode
-is automatically enabled.  Otherwise, use **--rgb24** option or set
+is automatically enabled.  Otherwise, use `--rgb24` option or set
 `GETOPTEX_RGB24` environment variable to produce full-color sequence.
 
 # INSTALL
