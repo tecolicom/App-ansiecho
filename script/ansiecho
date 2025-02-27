@@ -266,11 +266,11 @@ same output, but second one looks better.
 
 =item B<-xu> I<name>
 
-Sets the argument separator to I<string>.  Unlike the Β<--separate>
+Sets the argument separator to I<string>.  Unlike the C<--separate>
 option, it can be used in the middle of processing arguments, and the
 string will be inserted before each subsequent argument.
 
-When the B<-xu> option is used, the given string is interpreted as a
+When the C<-xu> option is used, the given string is interpreted as a
 unicode name.  The following command uses unicode's C<ZERO WIDTH
 JOINER> to generate the characters that make up a family of four.
 

@@ -244,11 +244,11 @@ Then use this variable like:
 - **-x** _string_
 - **-xu** _name_
 
-    Sets the argument separator to _string_.  Unlike the Β<--separate>
+    Sets the argument separator to _string_.  Unlike the `--separate`
     option, it can be used in the middle of processing arguments, and the
     string will be inserted before each subsequent argument.
 
-    When the **-xu** option is used, the given string is interpreted as a
+    When the `-xu` option is used, the given string is interpreted as a
     unicode name.  The following command uses unicode's `ZERO WIDTH
     JOINER` to generate the characters that make up a family of four.
 
