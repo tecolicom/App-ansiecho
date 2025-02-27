@@ -2,6 +2,10 @@ Revision history for Perl script App-ansiecho
 
 {{$NEXT}}
 
+1.10 2025-02-27T07:38:34Z
+
+    - introduce -u/-U and -x options
+
 1.09 2025-01-18T12:37:27Z
 
     - fix bug of not printing "\x30" (0)

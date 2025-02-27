@@ -44,11 +44,11 @@
          "requires" : {
             "Encode" : "0",
             "Getopt::EX" : "v2.1.4",
-            "Getopt::EX::Hashed" : "1.05",
+            "Getopt::EX::Hashed" : "1.06",
             "List::Util" : "0",
             "Pod::Usage" : "0",
-            "Term::ANSIColor::Concise" : "2.05",
-            "Text::ANSI::Printf" : "2.05",
+            "Term::ANSIColor::Concise" : "2.08",
+            "Text::ANSI::Printf" : "2.07",
             "perl" : "v5.16.0"
          }
       },
@@ -71,7 +71,7 @@
          "web" : "https://github.com/tecolicom/App-ansiecho"
       }
    },
-   "version" : "1.09",
+   "version" : "1.10",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <kaz@utashiro.com>"

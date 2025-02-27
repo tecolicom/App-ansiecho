@@ -25,7 +25,7 @@ Prefix Options:
     -f/-F FORMAT ARGS  Format arguments
        -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
-    -x    STRING       Set STRING as a separator
+    -x[u] STRING       Set STRING as a separator
 
 Example:
 
@@ -52,7 +52,7 @@ Example:
 
 # VERSION
 
-Version 1.09
+Version 1.10
 
 # DESCRIPTION
 
@@ -248,7 +248,7 @@ Then use this variable like:
     option, it can be used in the middle of processing arguments, and the
     string will be inserted before each subsequent argument.
 
-    When the **-xu** option is used, the givenstring is interpreted as a
+    When the **-xu** option is used, the given string is interpreted as a
     unicode name.  The following command uses unicode's `ZERO WIDTH
     JOINER` to generate the characters that make up a family of four.
 
@@ -467,7 +467,7 @@ Kazumasa Utashiro
 
 # LICENSE
 
-Copyright © 2021-2024 Kazumasa Utashiro.
+Copyright © 2021-2025 Kazumasa Utashiro.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
