@@ -29,7 +29,7 @@ use Getopt::EX::Hashed; {
     has join       => " j    " , action => sub { $_->separate = '' };
     has escape     => " e !  " , default => 1;
     has rgb24      => "   !  " ;
-    has separate   => " x =s " , default => " ";
+    has separate   => "   =s " , default => " ";
     has help       => " h    " ;
     has version    => " v    " ;
 
@@ -61,7 +61,7 @@ use Getopt::EX::Hashed; {
 sub run {
     my $app = shift;
     $app->options(@_);
-    print join($app->separate, $app->retrieve), $app->terminate;
+    print $app->retrieve, $app->terminate;
 }
 
 sub options {
@@ -85,7 +85,7 @@ sub uniname {
 
 sub retrieve {
     my $app = shift;
-    my $count = shift;
+    my $count = shift // 0;
     my $in = $app->params;
     my(@style, @effect);
 
@@ -93,12 +93,23 @@ sub retrieve {
     my @pending;
     my $charge = sub { push @pending, @_ };
     my $discharge = sub {
-	push @out, join '', splice(@pending), @_ if @pending or @_;
+	return if @pending == 0 and @_ == 0;
+	if ($count == 0 and @out > 0 and $app->separate ne '') {
+	    push @out, $app->separate;
+	}
+	push @out, join '', splice(@pending), @_;
     };
 
     while (@$in) {
 	my $arg = shift @$in;
 
+	# -x : set separator
+	if ($arg =~ /^-x(?<uni>u)?$/) {
+	    my $uni = %+;
+	    my $sep = $app->retrieve(1) // die "Not enough argument.\n";
+	    $app->separate = $uni ? uniname($sep) : $sep;
+	    next;
+	}
 	# -S
 	if ($arg =~ /^-S$/) {
 	    unshift @style, [ \&ansi_code ];
@@ -107,13 +118,13 @@ sub retrieve {
 	# -c, -C
 	if ($arg =~ /^-([cC])(.+)?$/) {
 	    my $target = $1 eq 'c' ? \@effect : \@style;
-	    my($color) = defined $2 ? unescape($2) : $app->retrieve(1);
+	    my $color = defined $2 ? unescape($2) : $app->retrieve(1);
 	    unshift @$target, [ \&ansi_color, $color ];
 	    next;
 	}
 	# -F
 	if ($arg =~ /^-(F)(.+)?$/) {
-	    my($format) = defined $2 ? unescape($2) : $app->retrieve(1);
+	    my $format = defined $2 ? unescape($2) : $app->retrieve(1);
 	    unshift @style, [ \&ansi_sprintf, $format ];
 	    next;
 	}
@@ -210,7 +221,7 @@ sub retrieve {
     }
     $discharge->();
     die "Not enough argument.\n" if $count and @out < $count;
-    return @out;
+    wantarray ? @out : $out[0];
 }
 
 1;

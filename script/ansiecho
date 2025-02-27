@@ -26,7 +26,7 @@ Command Options:
     -j --join          Do not print space between arguments
     -e --escape        Enable backslash escape notation
        --rgb24         Produce 24bit color sequence
-    -x --separate=s    Set argument separator
+       --separate=s    Set argument separator
     -h --help          Print this message
     -v --version       Print version
 
@@ -38,6 +38,7 @@ Prefix Options:
     -f/-F FORMAT ARGS  Format arguments
        -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
+    -x[u] STRING       Set STRING as a separator
 
 Example:
 
@@ -55,8 +56,8 @@ Example:
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
                                 ┗sequence━━━━━━━━━━━━━┛
 
-    ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
-             ┗combine━━━┛ ┗unicode━━━━━━━━━━━━┛
+    ansiecho  -xu ZWJ  -U MAN WOMAN GIRL BOY
+             ┗combine┛ ┗unicode━━━━━━━━━━━━┛
 
 =begin html
 
@@ -205,7 +206,7 @@ L<echo(1)> command.  Use C<--no-escape> to disable it.
 Do not print space between arguments.  This is a short-cut for
 C<--separate ''>.
 
-=item B<-x>, B<--separate> I<string>
+=item B<--separate> I<string>
 
 Set separator string between arguments.
 
@@ -261,6 +262,20 @@ same output, but second one looks better.
 
     ansiecho -f '%*s' 16 hello
 
+=item B<-x> I<string>
+
+=item B<-xu> I<name>
+
+Sets the argument separator to I<string>.  Unlike the Β<--separate>
+option, it can be used in the middle of processing arguments, and the
+string will be inserted before each subsequent argument.
+
+When the B<-xu> option is used, the given string is interpreted as a
+unicode name.  The following command uses unicode's C<ZERO WIDTH
+JOINER> to generate the characters that make up a family of four.
+
+    ansiecho -xu ZWJ -U MAN WOMAN GIRL BOY
+
 =item B<-S> I<spec>
 
 If option C<-S> found, all following arguments are considered as a
@@ -296,10 +311,10 @@ below.
 All subsequent arguments are interpreted as unicode names or code
 points, until option C<-E> is found.
 
-Option C<--separate> (C<-x>) option can be used to combine emoji and
-such by using the Unicode ZERO WIDTH JOINER (ZWJ) character.
+Option C<-xu> can be used to combine emoji and such by using the
+Unicode C<ZERO WIDTH JOINER> (C<ZWJ> in short) character.
 
-    ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
+    ansiecho -xu ZWJ -U MAN WOMAN GIRL BOY
 
 =item B<-F> I<format>
 

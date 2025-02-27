@@ -255,4 +255,24 @@ test(qw(-S R R R -E H),
 test(qw(-j -S R R R -E H),
    join('', ((ansi_code('R')) x 3)) . "H\n");
 
+# -x
+test(qw(A B C -x : D -x , E F),
+     "A B C:D,E,F" . "\n"
+    );
+
+# -u
+test(qw(-u man woman -u girl boy),
+     "👨 woman 👧 boy" . "\n"
+    );
+
+# -U
+test(qw(-U man woman girl boy),
+     "👨 👩 👧 👦" . "\n"
+    );
+
+# -xu
+test(qw(-xu zwj -U man woman girl boy),
+     "👨‍👩‍👧‍👦" . "\n"
+    );
+
 done_testing;

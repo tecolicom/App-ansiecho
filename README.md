@@ -13,7 +13,7 @@ Command Options:
     -j --join          Do not print space between arguments
     -e --escape        Enable backslash escape notation
        --rgb24         Produce 24bit color sequence
-    -x --separate=s    Set argument separator
+       --separate=s    Set argument separator
     -h --help          Print this message
     -v --version       Print version
 
@@ -25,6 +25,7 @@ Prefix Options:
     -f/-F FORMAT ARGS  Format arguments
        -E              Terminate -C -S -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
+    -x    STRING       Set STRING as a separator
 
 Example:
 
@@ -42,8 +43,8 @@ Example:
     read -a color < <( ansiecho -S ZE K/544 K/454 K/445 )
                                 ┗sequence━━━━━━━━━━━━━┛
 
-    ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
-             ┗combine━━━┛ ┗unicode━━━━━━━━━━━━┛
+    ansiecho  -xu ZWJ  -U MAN WOMAN GIRL BOY
+             ┗combine┛ ┗unicode━━━━━━━━━━━━┛
 
 <div>
     <p><img width="750" src="https://raw.githubusercontent.com/kaz-utashiro/App-ansiecho/main/images/synopsis.png">
@@ -188,7 +189,7 @@ Then use this variable like:
     Do not print space between arguments.  This is a short-cut for
     `--separate ''`.
 
-- **-x**, **--separate** _string_
+- **--separate** _string_
 
     Set separator string between arguments.
 
@@ -240,6 +241,19 @@ Then use this variable like:
 
         ansiecho -f '%*s' 16 hello
 
+- **-x** _string_
+- **-xu** _name_
+
+    Sets the argument separator to _string_.  Unlike the Β<--separate>
+    option, it can be used in the middle of processing arguments, and the
+    string will be inserted before each subsequent argument.
+
+    When the **-xu** option is used, the givenstring is interpreted as a
+    unicode name.  The following command uses unicode's `ZERO WIDTH
+    JOINER` to generate the characters that make up a family of four.
+
+        ansiecho -xu ZWJ -U MAN WOMAN GIRL BOY
+
 - **-S** _spec_
 
     If option `-S` found, all following arguments are considered as a
@@ -275,10 +289,10 @@ Then use this variable like:
     All subsequent arguments are interpreted as unicode names or code
     points, until option `-E` is found.
 
-    Option `--separate` (`-x`) option can be used to combine emoji and
-    such by using the Unicode ZERO WIDTH JOINER (ZWJ) character.
+    Option `-xu` can be used to combine emoji and such by using the
+    Unicode `ZERO WIDTH JOINER` (`ZWJ` in short) character.
 
-        ansiecho -x '\N{ZWJ}' -U MAN WOMAN GIRL BOY
+        ansiecho -xu ZWJ -U MAN WOMAN GIRL BOY
 
 - **-F** _format_
 
