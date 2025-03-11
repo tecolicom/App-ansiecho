@@ -4,9 +4,7 @@ use v5.14;
 use warnings;
 use App::ansiecho;
 
-App::ansiecho->new->run(splice @ARGV);
-
-exit;
+exit App::ansiecho->new->run(splice @ARGV);
 
 __END__
 

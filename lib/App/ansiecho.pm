@@ -62,6 +62,7 @@ sub run {
     my $app = shift;
     $app->options(@_);
     print $app->retrieve, $app->terminate;
+    return 0;
 }
 
 sub options {
