@@ -24,14 +24,14 @@ use List::Util qw(max);
 
 use Getopt::EX::Hashed; {
     Getopt::EX::Hashed->configure(DEFAULT => [ is => 'rw' ]);
-    has debug      => "      " ;
-    has n          => "      " , action => sub { $_->terminate = '' };
-    has join       => " j    " , action => sub { $_->separate = '' };
-    has escape     => " e !  " , default => 1;
-    has rgb24      => "   !  " ;
-    has separate   => "   =s " , default => " ";
-    has help       => " h    " ;
-    has version    => " v    " ;
+    has debug    => "      " ;
+    has n        => "      " , action => sub { $_->terminate = '' };
+    has join     => " j    " , action => sub { $_->separate = '' };
+    has escape   => " e !  " , default => 1;
+    has rgb24    => "   !  " ;
+    has separate => "   =s " , default => " ";
+    has help     => " h    " ;
+    has version  => " v    " ;
 
     has '+separate' => sub {
 	my($name, $arg) = map "$_", @_;
@@ -92,8 +92,8 @@ sub retrieve {
 
     my @out;
     my @pending;
-    my $charge = sub { push @pending, @_ };
-    my $discharge = sub {
+    my $submit = sub { push @pending, @_ };
+    my $commit = sub {
 	return if @pending == 0 and @_ == 0;
 	if ($count == 0 and @out > 0 and $app->separate ne '') {
 	    push @out, $app->separate;
@@ -151,7 +151,7 @@ sub retrieve {
 		$arg = $code;
 	    } else {
 		if (@out == 0 or $opt eq 'i') {
-		    $charge->($code);
+		    $submit->($code);
 		} else {
 		    $out[-1] .= $code;
 		}
@@ -212,15 +212,14 @@ sub retrieve {
 	    $arg = $func->(@opts, $arg);
 	}
 
-	$discharge->($arg);
+	$commit->($arg);
 
 	if ($count) {
-	    my $out = @out + !!@pending;
-	    die "Unexpected behavior.\n" if $out > $count;
-	    last if $out == $count;
+	    die "Unexpected behavior.\n" if @out > $count;
+	    last if @out == $count;
 	}
     }
-    $discharge->();
+    $commit->();
     die "Not enough argument.\n" if $count and @out < $count;
     wantarray ? @out : $out[0];
 }
