@@ -23,7 +23,7 @@ Prefix Options:
     -c/-C SPEC ARG     Colorize next argument(s)
     -u/-U NAME         Convert to named Unicode char(s)
     -f/-F FORMAT ARGS  Format arguments
-       -E              Terminate -C -S -F effect
+       -E              Terminate above -C -S -U -F effect
     -i/-a SPEC         Insert/Append ANSI sequence
     -x[u] STRING       Set STRING as a separator
 
